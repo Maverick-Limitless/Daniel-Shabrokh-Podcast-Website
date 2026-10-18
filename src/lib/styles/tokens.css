@@ -1,0 +1,92 @@
+/*
+	DSMP design tokens (PRD §8).
+	Contrast ratios below were computed with the WCAG 2.x relative-luminance
+	formula and are re-verified automatically by tests/unit/tokens.test.ts —
+	if you change a color here, that test will catch a regression.
+*/
+
+:root {
+	/* ---- color · ink surfaces ---- */
+	--color-ink: #101a2c; /* body text on ivory: 15.85:1 */
+	--color-ink-raised: #16233c;
+	--color-ink-deep: #0b1220;
+	--color-ink-line: #2a3a57;
+
+	/* ---- color · ivory surfaces ---- */
+	--color-ivory: #f8f4ea;
+	--color-ivory-deep: #efe7d6;
+	--color-ivory-line: #dcd2bc;
+	--color-surface-card: #fffdf7;
+
+	/* ---- color · brass (restrained emphasis) ---- */
+	--color-brass: #9c7a28; /* large text on ivory 3.66:1; non-text on ink 4.33:1 */
+	--color-brass-strong: #7e611f; /* small text on ivory 5.29:1 */
+	--color-brass-bright: #c9a75c; /* text on ink 7.60:1; ink text on it 6.4:1 */
+
+	/* ---- color · text ---- */
+	--color-text-on-ivory: var(--color-ink);
+	--color-text-muted-on-ivory: #5c5648; /* 6.64:1 */
+	--color-text-on-ink: #f4f0e6; /* 15.30:1 */
+	--color-text-muted-on-ink: #adb8cb; /* 8.70:1 */
+
+	/* ---- color · feedback ---- */
+	--color-error: #8a1f1f; /* on ivory 8.33:1 */
+	--color-error-on-ink: #e08e8e; /* on ink 6.99:1 */
+	--color-success: #2e5e3a;
+	--color-focus: var(--color-brass); /* focus ring: ≥3:1 on both surfaces */
+
+	/* ---- typography ---- */
+	--font-display: 'Fraunces Variable', 'Fraunces', Georgia, 'Times New Roman', serif;
+	--font-body: 'Newsreader Variable', 'Newsreader', Georgia, serif;
+	--font-ui: 'Inter Variable', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+	--text-display: clamp(2.5rem, 1.6rem + 4vw, 4.75rem);
+	--text-h1: clamp(2.1rem, 1.5rem + 2.4vw, 3.25rem);
+	--text-h2: clamp(1.55rem, 1.25rem + 1.2vw, 2.1rem);
+	--text-h3: 1.3rem;
+	--text-body-lg: 1.1875rem;
+	--text-body: 1.0625rem;
+	--text-small: 0.9375rem;
+	--text-meta: 0.8125rem;
+	--text-micro: 0.75rem;
+
+	--leading-body: 1.7;
+	--leading-tight: 1.15;
+	--tracking-meta: 0.14em;
+
+	/* ---- space (4px base) ---- */
+	--space-2xs: 0.25rem;
+	--space-xs: 0.5rem;
+	--space-s: 0.75rem;
+	--space-m: 1rem;
+	--space-l: 1.5rem;
+	--space-xl: 2rem;
+	--space-2xl: 3rem;
+	--space-3xl: 4.5rem;
+	--space-4xl: 7rem;
+
+	/* ---- radius ---- */
+	--radius-s: 6px;
+	--radius-m: 10px;
+	--radius-l: 18px;
+	--radius-full: 999px;
+
+	/* ---- layout ---- */
+	--container: 76rem;
+	--container-narrow: 44rem; /* ≈66ch reading column at body size */
+	--header-h: 4.25rem;
+
+	/* ---- elevation ---- */
+	--shadow-s: 0 1px 2px rgb(16 26 44 / 0.08), 0 2px 8px rgb(16 26 44 / 0.06);
+	--shadow-m: 0 2px 6px rgb(16 26 44 / 0.1), 0 12px 32px rgb(16 26 44 / 0.12);
+
+	/* ---- motion (PRD §8.5) ---- */
+	--ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+	--dur-fast: 140ms;
+	--dur-med: 240ms;
+	--dur-slow: 420ms;
+
+	/* ---- z-index ---- */
+	--z-header: 40;
+	--z-player: 50;
+}

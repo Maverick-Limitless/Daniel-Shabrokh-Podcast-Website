@@ -1,0 +1,51 @@
+{
+	"name": "dsh",
+	"private": true,
+	"version": "0.0.1",
+	"type": "module",
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"start": "node build/index.js",
+		"prepare": "svelte-kit sync || echo ''",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"test:e2e": "playwright test",
+		"db:generate": "prisma generate",
+		"db:migrate": "prisma migrate dev",
+		"db:deploy": "prisma migrate deploy",
+		"db:seed-dev": "node prisma/seed-dev.mjs",
+		"admin:create": "node scripts/create-admin.mjs"
+	},
+	"devDependencies": {
+		"@playwright/test": "^1.64.1",
+		"@sveltejs/adapter-node": "^6.0.0",
+		"@sveltejs/kit": "^3.0.0",
+		"@sveltejs/vite-plugin-svelte": "^7.2.0",
+		"@types/sanitize-html": "^2.16.2",
+		"prisma": "7.10.1",
+		"svelte": "^5.57.1",
+		"svelte-check": "^4.6.0",
+		"typescript": "^6.0.3",
+		"vite": "^8.3.0",
+		"vitest": "^5.0.5"
+	},
+	"imports": {
+		"#lib": "./src/lib/index.js",
+		"#lib/*": "./src/lib/*"
+	},
+	"dependencies": {
+		"@fontsource-variable/fraunces": "^5.3.0",
+		"@fontsource-variable/inter": "^5.3.0",
+		"@fontsource-variable/newsreader": "^5.3.0",
+		"@node-rs/argon2": "^2.2.2",
+		"@prisma/adapter-better-sqlite3": "^7.10.1",
+		"@prisma/client": "^7.10.1",
+		"marked": "^18.1.1",
+		"sanitize-html": "^2.18.1",
+		"zod": "^4.6.7"
+	}
+}
