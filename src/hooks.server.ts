@@ -2,7 +2,8 @@ import type { Handle } from '@sveltejs/kit/hooks';
 import { getSessionFromCookie } from '#lib/server/auth';
 
 export const handle: Handle = async ({ event, resolve }) => {
-	const auth = await getSessionFromCookie(event.cookies).catch(() => null);
+	const secure = event.url.protocol === 'https:';
+	const auth = await getSessionFromCookie(event.cookies, secure).catch(() => null);
 	if (auth) {
 		event.locals.administrator = {
 			id: auth.administrator.id,

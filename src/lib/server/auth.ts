@@ -45,18 +45,23 @@ export function loginKey(username: string, ip: string): string {
 	return sha256(`${username.toLowerCase()}|${ip}`);
 }
 
-function cookieOptions(maxAgeSeconds: number) {
+/**
+ * Cookie options. `secure` is derived from the actual request protocol at
+ * every call site: HTTPS deployments always get Secure cookies; plain-http
+ * only occurs in local testing.
+ */
+function cookieOptions(maxAgeSeconds: number, secure: boolean) {
 	return {
 		path: '/',
 		httpOnly: true,
 		sameSite: 'lax' as const,
-		secure: process.env.NODE_ENV === 'production',
+		secure,
 		maxAge: maxAgeSeconds
 	};
 }
 
 /** Creates a brand-new session row + cookie. Used at login (session regeneration) and rotation. */
-export async function createSession(administratorId: string, cookies: Cookies): Promise<string> {
+export async function createSession(administratorId: string, cookies: Cookies, secure: boolean): Promise<string> {
 	const token = randomBytes(32).toString('base64url');
 	const now = Date.now();
 	await db.session.create({
@@ -67,11 +72,11 @@ export async function createSession(administratorId: string, cookies: Cookies): 
 			expiresAt: new Date(now + SLIDE_MS)
 		}
 	});
-	cookies.set(SESSION_COOKIE, token, cookieOptions(Math.floor(SLIDE_MS / 1000)));
+	cookies.set(SESSION_COOKIE, token, cookieOptions(Math.floor(SLIDE_MS / 1000), secure));
 	return sha256(token);
 }
 
-export async function getSessionFromCookie(cookies: Cookies) {
+export async function getSessionFromCookie(cookies: Cookies, secure: boolean) {
 	const token = cookies.get(SESSION_COOKIE);
 	if (!token) return null;
 
@@ -100,7 +105,11 @@ export async function getSessionFromCookie(cookies: Cookies) {
 			.update({ where: { id: sessionId }, data: { expiresAt, lastSeenAt: new Date(now) } })
 			.catch(() => {});
 		if (expiresAt.getTime() !== session.expiresAt.getTime()) {
-			cookies.set(SESSION_COOKIE, token, cookieOptions(Math.floor((expiresAt.getTime() - now) / 1000)));
+			cookies.set(
+				SESSION_COOKIE,
+				token,
+				cookieOptions(Math.floor((expiresAt.getTime() - now) / 1000), secure)
+			);
 		}
 	}
 
@@ -128,8 +137,19 @@ export async function destroyOtherSessions(administratorId: string, keepSessionI
 /** Opportunistic cleanup of expired sessions and stale audit rows. */
 async function purgeExpired(): Promise<void> {
 	const now = new Date();
-	await db.session.deleteMany({ where: { OR: [{ expiresAt: { lt: now } }, { createdAt: { lt: new Date(now.getTime() - ABSOLUTE_MS) } }] } }).catch(() => {});
-	await db.adminEvent.deleteMany({ where: { createdAt: { lt: new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000) } } }).catch(() => {});
+	await db.session
+		.deleteMany({
+			where: {
+				OR: [
+					{ expiresAt: { lt: now } },
+					{ createdAt: { lt: new Date(now.getTime() - ABSOLUTE_MS) } }
+				]
+			}
+		})
+		.catch(() => {});
+	await db.adminEvent
+		.deleteMany({ where: { createdAt: { lt: new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000) } } })
+		.catch(() => {});
 }
 
 export type LoginResult = { ok: true } | { ok: false; message: string };
@@ -138,7 +158,8 @@ export async function attemptLogin(
 	username: string,
 	password: string,
 	ip: string,
-	cookies: Cookies
+	cookies: Cookies,
+	secure: boolean
 ): Promise<LoginResult> {
 	const key = loginKey(username, ip);
 
@@ -178,7 +199,7 @@ export async function attemptLogin(
 	}
 
 	// A fresh token + row is created at login: the session is regenerated (PRD §6.3).
-	await createSession(administrator.id, cookies);
+	await createSession(administrator.id, cookies, secure);
 	await logAdminEvent({ type: 'login_success', actor: administrator.username });
 	await purgeExpired();
 	return { ok: true };
@@ -195,7 +216,8 @@ export async function changePassword(
 	administratorId: string,
 	currentPassword: string,
 	newPassword: string,
-	cookies: Cookies
+	cookies: Cookies,
+	secure: boolean
 ): Promise<PasswordChangeResult> {
 	const administrator = await db.administrator.findUnique({ where: { id: administratorId } });
 	if (!administrator) return { ok: false, message: 'Account not found.' };
@@ -221,7 +243,7 @@ export async function changePassword(
 		await destroyOtherSessions(administratorId, currentSessionId);
 		await db.session.delete({ where: { id: currentSessionId } }).catch(() => {});
 	}
-	await createSession(administratorId, cookies);
+	await createSession(administratorId, cookies, secure);
 
 	await logAdminEvent({
 		type: 'password_changed',
