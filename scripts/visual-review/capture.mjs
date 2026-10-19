@@ -1,8 +1,8 @@
 // Screenshot capture pipeline for the visual-QA workflow
-// (DSMP-VISION-WORKFLOW-1.0.0 §4–§5). Reuses the project's Playwright
-// installation. Launches the real production build on a verified-free port,
-// against a freshly seeded, disposable [DEV] fixture database — never real
-// data, never credentials in captures.
+// (DSHPODCAST-GLM-NVIDIA-VISION-WORKFLOW-2.0.0 §5B). Reuses the project's
+// Playwright installation. Launches the real production build on a
+// verified-free port against a freshly seeded, disposable [DEV] fixture
+// database — never real data, never credentials in captures.
 
 import { spawn, spawnSync } from 'node:child_process';
 import { createHash, randomBytes } from 'node:crypto';
@@ -13,9 +13,7 @@ import { PrismaClient } from '@prisma/client';
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { hash } from '@node-rs/argon2';
 
-const ROOT = process.cwd();
-
-/** Refuses to run on an occupied port; never terminates other processes (§4). */
+/** Refuses to run on an occupied port; never terminates other processes (§5B). */
 export function ensureFreePort(port) {
 	return new Promise((resolve, reject) => {
 		const server = net.createServer();
@@ -24,7 +22,7 @@ export function ensureFreePort(port) {
 			reject(
 				new Error(
 					`Port ${port} is already in use (code ${err.code}). ` +
-						`Choose a free port via VISUAL_REVIEW_PORT. This workflow never kills unrelated processes.`
+						'Choose a free port via VISUAL_REVIEW_PORT. This workflow never kills unrelated processes.'
 				)
 			);
 		});
@@ -82,7 +80,12 @@ export function buildApp(port) {
 	spawnChecked('pnpm', ['build'], { KIT_ORIGIN: `http://localhost:${port}` }, 'pnpm build');
 }
 
-/** Boots the built server; resolves once /healthz answers. */
+/**
+ * Boots the built server; resolves once /healthz answers. Fails fast if the
+ * child process exits before becoming healthy (e.g. the port was taken
+ * between the pre-check and the listen), instead of silently polling or,
+ * worse, adopting a stale server that already held the port.
+ */
 export async function startServer({ port, dbPath }) {
 	const server = spawn('node', ['build/index.js'], {
 		env: {
@@ -95,7 +98,21 @@ export async function startServer({ port, dbPath }) {
 	});
 	const base = `http://localhost:${port}`;
 
+	let exited = false;
+	let exitCode = null;
+	server.once('exit', (code) => {
+		exited = true;
+		exitCode = code;
+	});
+
 	for (let i = 0; i < 60; i++) {
+		if (exited) {
+			throw new Error(
+				`The production server exited before becoming healthy (code ${exitCode}) — ` +
+					`most likely the port was taken between the pre-check and startup. ` +
+					'Choose a different VISUAL_REVIEW_PORT and retry.'
+			);
+		}
 		try {
 			const res = await fetch(`${base}/healthz`);
 			if (res.ok) {
@@ -117,18 +134,27 @@ export async function startServer({ port, dbPath }) {
 
 const sha256 = (buffer) => createHash('sha256').update(buffer).digest('hex');
 
+function gitIdentity() {
+	const sha = spawnSync('git', ['rev-parse', '--short', 'HEAD'], { encoding: 'utf8' });
+	return sha.status === 0 ? sha.stdout.trim() : 'unknown';
+}
+
 /**
- * Captures the review inventory (§5): desktop 1440×900, mobile 390×844,
- * tablet 768×1024, plus 320×568 — full-page by default, viewport-focused
- * shots for interaction states. Returns inventory entries with route,
- * viewport, file path, dimensions, and a stable id.
+ * Captures the review inventory (§5B): desktop 1440×900, mobile 390×844,
+ * tablet 768×1024, and 320×568 — full-page by default, viewport-focused
+ * shots for interaction and keyboard-focus states. Returns { items, skipped,
+ * meta }; routes that could not be captured are recorded in `skipped`
+ * with reasons, never silently dropped.
  */
-export async function captureInventory({ base, outDir, adminUsername, adminPassword, articleId }) {
+export async function captureInventory({ base, outDir, adminUsername, adminPassword, articleId, maxImageBytes = 4 * 1024 * 1024 }) {
 	const capturesDir = `${outDir}/captures`;
 	mkdirSync(capturesDir, { recursive: true });
 
 	const browser = await chromium.launch();
-	const inventory = [];
+	const browserVersion = await browser.version();
+	const gitSha = gitIdentity();
+	const skipped = [];
+	const items = [];
 
 	async function withContext(viewport, run) {
 		const context = await browser.newContext({ viewport });
@@ -144,17 +170,22 @@ export async function captureInventory({ base, outDir, adminUsername, adminPassw
 		const file = `${capturesDir}/${item.id}.png`;
 		await page.screenshot({ path: file, fullPage: item.fullPage !== false });
 		const bytes = statSync(file).size;
-		inventory.push({
+		const sha = sha256(readFileSync(file));
+		items.push({
 			id: item.id,
 			route: item.route,
 			viewport: item.viewport,
 			captureType: item.fullPage === false ? 'viewport' : 'fullpage',
+			requiresAuth: item.requiresAuth === true,
+			interaction: item.interaction === true,
 			file,
 			bytes,
-			sha256: sha256(readFileSync(file)),
-			// Focused viewport variant for review when the full-page shot is too
-			// large to send (exact API image-size limits are not published).
-			payloadForReview: file
+			sha256: sha,
+			// Payload actually submitted for review (may become a viewport
+			// variant for oversized captures — see the fallback loop below).
+			payloadForReview: file,
+			payloadBytes: bytes,
+			payloadSha256: sha
 		});
 	}
 
@@ -196,7 +227,13 @@ export async function captureInventory({ base, outDir, adminUsername, adminPassw
 		await page.goto(`${base}/listen`);
 		await page.getByRole('button', { name: /Play \[DEV\]/ }).click();
 		await page.locator('.player-bar').waitFor();
-		await record(page, { id: 'player-interaction-desktop', route: '/listen', viewport: D, fullPage: false });
+		await record(page, { id: 'player-interaction-desktop', route: '/listen', viewport: D, fullPage: false, interaction: true });
+
+		// Keyboard-focus state: skip link focused and visible (viewport shot).
+		await page.goto(`${base}/`);
+		await page.keyboard.press('Tab');
+		await page.getByRole('link', { name: 'Skip to main content' }).waitFor();
+		await record(page, { id: 'focus-state-desktop', route: '/', viewport: D, fullPage: false, interaction: true });
 	});
 
 	// ---- admin login states (no session, no secret content) ----
@@ -216,18 +253,27 @@ export async function captureInventory({ base, outDir, adminUsername, adminPassw
 	await withContext({ width: 1440, height: 900 }, async (page) => {
 		await login(page);
 		const adminShots = [
-			['admin-dashboard-desktop', '/admin', true],
-			['admin-content-list-desktop', '/admin/insights', true],
-			['admin-editor-desktop', '/admin/insights/new', true],
-			['admin-settings-desktop', '/admin/settings', true]
+			['admin-dashboard-desktop', '/admin'],
+			['admin-content-list-desktop', '/admin/insights'],
+			['admin-editor-desktop', '/admin/insights/new'],
+			['admin-settings-desktop', '/admin/settings']
 		];
-		for (const [id, route, fullPage] of adminShots) {
+		for (const [id, route] of adminShots) {
 			await page.goto(`${base}${route}`);
-			await record(page, { id, route, viewport: D, fullPage });
+			await record(page, { id, route, viewport: D, fullPage: true, requiresAuth: true });
 		}
+
 		if (articleId) {
 			await page.goto(`${base}/preview/insights/${articleId}`);
-			await record(page, { id: 'admin-preview-desktop', route: `/preview/insights/${articleId}`, viewport: D, fullPage: true });
+			await record(page, {
+				id: 'admin-preview-desktop',
+				route: `/preview/insights/${articleId}`,
+				viewport: D,
+				fullPage: true,
+				requiresAuth: true
+			});
+		} else {
+			skipped.push({ id: 'admin-preview-desktop', reason: 'fixture article dev-example-insight not found in the seeded database' });
 		}
 	});
 
@@ -253,7 +299,7 @@ export async function captureInventory({ base, outDir, adminUsername, adminPassw
 		await page.goto(`${base}/`);
 		await page.getByRole('button', { name: 'Open menu' }).click();
 		await page.locator('.nav-mobile').waitFor();
-		await record(page, { id: 'nav-open-mobile', route: '/', viewport: M, fullPage: false });
+		await record(page, { id: 'nav-open-mobile', route: '/', viewport: M, fullPage: false, interaction: true });
 	});
 
 	// ---- smallest supported width ----
@@ -262,32 +308,46 @@ export async function captureInventory({ base, outDir, adminUsername, adminPassw
 		await record(page, { id: 'home-320', route: '/', viewport: S, fullPage: true });
 	});
 
-	// Large full-page captures: add viewport-only variants for review payload.
-	for (const item of inventory) {
-		if (item.captureType === 'fullpage' && item.bytes > 4 * 1024 * 1024) {
-			// Re-capture a viewport-only variant for this route; interaction
-			// states are captured as viewport shots already.
-			const context = await browser.newContext({
-				viewport: {
-					width: Number(item.viewport.split('x')[0]),
-					height: Number(item.viewport.split('x')[1])
-				}
-			});
-			const page = await context.newPage();
+	// Oversized full-page captures: produce viewport-only variants for the
+	// review payload. Authenticated routes are re-captured inside a logged-in
+	// context (a fresh unauthenticated context would capture the login
+	// redirect instead of the real page); interaction states are already
+	// viewport shots and are skipped.
+	for (const item of items) {
+		if (item.interaction || item.captureType !== 'fullpage' || item.bytes <= maxImageBytes) continue;
+
+		const [w, h] = item.viewport.split('x').map(Number);
+		const context = await browser.newContext({ viewport: { width: w, height: h } });
+		const page = await context.newPage();
+		try {
+			if (item.requiresAuth) await login(page);
 			await page.goto(`${base}${item.route}`);
 			const file = `${capturesDir}/${item.id}-viewport.png`;
 			await page.screenshot({ path: file, fullPage: false });
 			item.payloadForReview = file;
-			item.reviewBytes = statSync(file).size;
+			item.payloadBytes = statSync(file).size;
+			item.payloadSha256 = sha256(readFileSync(file));
+		} catch (error) {
+			skipped.push({
+				id: item.id,
+				reason: `full-page capture was ${item.bytes} bytes (over the ${maxImageBytes}-byte limit) and the viewport variant could not be captured: ${error.message}`
+			});
+		} finally {
 			await context.close();
-		} else {
-			item.reviewBytes = item.bytes;
 		}
 	}
 
 	await browser.close();
 
-	return inventory;
+	const meta = {
+		capturedAt: new Date().toISOString(),
+		browser: `chromium ${browserVersion} (Playwright)`,
+		buildIdentity: `git ${gitSha} @ ${new Date().toISOString()}`,
+		appOrigin: base,
+		maxReviewPayloadBytes: maxImageBytes
+	};
+
+	return { items, skipped, meta };
 }
 
 export function writeJson(path, data) {

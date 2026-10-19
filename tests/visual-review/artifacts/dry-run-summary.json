@@ -1,6 +1,6 @@
 {
 	"mode": "dry-run",
-	"timestamp": "2026-10-19T08:43:55.879Z",
+	"timestamp": "2026-10-19T13:01:06.409Z",
 	"model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
 	"endpoint": "https://integrate.api.nvidia.com/v1/chat/completions",
 	"apiKeyPresent": false,
@@ -10,11 +10,12 @@
 			"model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
 			"route": "/",
 			"viewport": "1440x900",
-			"imageBytes": 199889,
-			"imageSha256": "fe8d68933a9a024487b90c0894647d9169658f78c032c2e0b3e1d3055a75595d",
+			"imageBytes": 201397,
+			"imageSha256": "2a6ab73416e0298ec669d21d42f098fd5543b26388c6f89c35a07deeafa93c59",
+			"payloadCheckOk": true,
+			"payloadCheckMessage": null,
 			"endpoint": "https://integrate.api.nvidia.com/v1/chat/completions",
-			"maxTokens": 2048,
-			"promptChars": 0,
+			"promptChars": 1811,
 			"note": "dry run: request built, not sent"
 		},
 		{
@@ -24,9 +25,10 @@
 			"viewport": "1440x900",
 			"imageBytes": 65025,
 			"imageSha256": "cf7fd98bd1f3cb79dd111a610807ae603d8fa1eaddcc7847fae13baa1e1ec4ac",
+			"payloadCheckOk": true,
+			"payloadCheckMessage": null,
 			"endpoint": "https://integrate.api.nvidia.com/v1/chat/completions",
-			"maxTokens": 2048,
-			"promptChars": 0,
+			"promptChars": 1811,
 			"note": "dry run: request built, not sent"
 		},
 		{
@@ -36,9 +38,10 @@
 			"viewport": "1440x900",
 			"imageBytes": 87062,
 			"imageSha256": "f5c43b9253f4b8b3c9cf26439594ba4d99e285ed0951b3afd074805c6ea0ff03",
+			"payloadCheckOk": true,
+			"payloadCheckMessage": null,
 			"endpoint": "https://integrate.api.nvidia.com/v1/chat/completions",
-			"maxTokens": 2048,
-			"promptChars": 0,
+			"promptChars": 1811,
 			"note": "dry run: request built, not sent"
 		},
 		{
@@ -48,9 +51,10 @@
 			"viewport": "1440x900",
 			"imageBytes": 70098,
 			"imageSha256": "22acda2509bbd626dc24023178eac23c2f42fe756c6cc5d823be82b580546334",
+			"payloadCheckOk": true,
+			"payloadCheckMessage": null,
 			"endpoint": "https://integrate.api.nvidia.com/v1/chat/completions",
-			"maxTokens": 2048,
-			"promptChars": 0,
+			"promptChars": 1811,
 			"note": "dry run: request built, not sent"
 		},
 		{
@@ -60,9 +64,10 @@
 			"viewport": "1440x900",
 			"imageBytes": 84995,
 			"imageSha256": "d8d43dc977214a1ad584431719d40cf8effb69a496b54f63e51f3faddd406ca1",
+			"payloadCheckOk": true,
+			"payloadCheckMessage": null,
 			"endpoint": "https://integrate.api.nvidia.com/v1/chat/completions",
-			"maxTokens": 2048,
-			"promptChars": 0,
+			"promptChars": 1811,
 			"note": "dry run: request built, not sent"
 		},
 		{
@@ -72,9 +77,10 @@
 			"viewport": "1440x900",
 			"imageBytes": 74607,
 			"imageSha256": "3c334508c9d3b469b989709a75de496aa9fce9b04700f227340e2a65577c48d5",
+			"payloadCheckOk": true,
+			"payloadCheckMessage": null,
 			"endpoint": "https://integrate.api.nvidia.com/v1/chat/completions",
-			"maxTokens": 2048,
-			"promptChars": 0,
+			"promptChars": 1811,
 			"note": "dry run: request built, not sent"
 		},
 		{
@@ -84,9 +90,10 @@
 			"viewport": "1440x900",
 			"imageBytes": 191505,
 			"imageSha256": "180b7a3ce987287b89af6bfef4938cf1d4f1b4ba88733cc068ea0203c4be190a",
+			"payloadCheckOk": true,
+			"payloadCheckMessage": null,
 			"endpoint": "https://integrate.api.nvidia.com/v1/chat/completions",
-			"maxTokens": 2048,
-			"promptChars": 0,
+			"promptChars": 1811,
 			"note": "dry run: request built, not sent"
 		},
 		{
@@ -96,9 +103,10 @@
 			"viewport": "1440x900",
 			"imageBytes": 125757,
 			"imageSha256": "cb2370118e41bd9fb6fae740e6df95f2bc49868ac2987913f20927b17905901b",
+			"payloadCheckOk": true,
+			"payloadCheckMessage": null,
 			"endpoint": "https://integrate.api.nvidia.com/v1/chat/completions",
-			"maxTokens": 2048,
-			"promptChars": 0,
+			"promptChars": 1811,
 			"note": "dry run: request built, not sent"
 		},
 		{
@@ -108,9 +116,10 @@
 			"viewport": "1440x900",
 			"imageBytes": 77712,
 			"imageSha256": "11655a261640ccfac0f2e458569d8bd21598c7427e316ac47afd2bd6332e5cc6",
+			"payloadCheckOk": true,
+			"payloadCheckMessage": null,
 			"endpoint": "https://integrate.api.nvidia.com/v1/chat/completions",
-			"maxTokens": 2048,
-			"promptChars": 0,
+			"promptChars": 1811,
 			"note": "dry run: request built, not sent"
 		},
 		{
@@ -120,9 +129,10 @@
 			"viewport": "1440x900",
 			"imageBytes": 162846,
 			"imageSha256": "b51e61952724c178e5ae83fc85af75b7dd7b1e5e887ebe018310bd45690e58a2",
+			"payloadCheckOk": true,
+			"payloadCheckMessage": null,
 			"endpoint": "https://integrate.api.nvidia.com/v1/chat/completions",
-			"maxTokens": 2048,
-			"promptChars": 0,
+			"promptChars": 1811,
 			"note": "dry run: request built, not sent"
 		},
 		{
@@ -132,9 +142,10 @@
 			"viewport": "1440x900",
 			"imageBytes": 251207,
 			"imageSha256": "f0c8ad1c6037866ffbf22351a160ee53b92123e5c798a00b2284b0c836c82965",
+			"payloadCheckOk": true,
+			"payloadCheckMessage": null,
 			"endpoint": "https://integrate.api.nvidia.com/v1/chat/completions",
-			"maxTokens": 2048,
-			"promptChars": 0,
+			"promptChars": 1811,
 			"note": "dry run: request built, not sent"
 		},
 		{
@@ -144,9 +155,10 @@
 			"viewport": "1440x900",
 			"imageBytes": 70392,
 			"imageSha256": "3308f323cd3d518e57ddb14fd4c0abc16a856da02e51d55e39f8da176558f333",
+			"payloadCheckOk": true,
+			"payloadCheckMessage": null,
 			"endpoint": "https://integrate.api.nvidia.com/v1/chat/completions",
-			"maxTokens": 2048,
-			"promptChars": 0,
+			"promptChars": 1811,
 			"note": "dry run: request built, not sent"
 		},
 		{
@@ -156,9 +168,23 @@
 			"viewport": "1440x900",
 			"imageBytes": 86371,
 			"imageSha256": "61f31a907087d545bdd3556f75a8a15e9a858a8ec5766fe62198a91c6aaeedc1",
+			"payloadCheckOk": true,
+			"payloadCheckMessage": null,
 			"endpoint": "https://integrate.api.nvidia.com/v1/chat/completions",
-			"maxTokens": 2048,
-			"promptChars": 0,
+			"promptChars": 1811,
+			"note": "dry run: request built, not sent"
+		},
+		{
+			"id": "focus-state-desktop",
+			"model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+			"route": "/",
+			"viewport": "1440x900",
+			"imageBytes": 96716,
+			"imageSha256": "b937d5c3353938d4ea9cd4fcb34ff7e545ac447a92d4c513510175556540c3ec",
+			"payloadCheckOk": true,
+			"payloadCheckMessage": null,
+			"endpoint": "https://integrate.api.nvidia.com/v1/chat/completions",
+			"promptChars": 1811,
 			"note": "dry run: request built, not sent"
 		},
 		{
@@ -168,9 +194,10 @@
 			"viewport": "1440x900",
 			"imageBytes": 69067,
 			"imageSha256": "e9ca8c0e074fb05e87c8457e4241f86f7b97e9938cc389de0261169f5e73d631",
+			"payloadCheckOk": true,
+			"payloadCheckMessage": null,
 			"endpoint": "https://integrate.api.nvidia.com/v1/chat/completions",
-			"maxTokens": 2048,
-			"promptChars": 0,
+			"promptChars": 1811,
 			"note": "dry run: request built, not sent"
 		},
 		{
@@ -180,9 +207,10 @@
 			"viewport": "1440x900",
 			"imageBytes": 74152,
 			"imageSha256": "87155b2127f205e9edf69d3c93be90160f0dc97db5f276024e12db7710d40ccb",
+			"payloadCheckOk": true,
+			"payloadCheckMessage": null,
 			"endpoint": "https://integrate.api.nvidia.com/v1/chat/completions",
-			"maxTokens": 2048,
-			"promptChars": 0,
+			"promptChars": 1811,
 			"note": "dry run: request built, not sent"
 		},
 		{
@@ -192,9 +220,10 @@
 			"viewport": "1440x900",
 			"imageBytes": 131742,
 			"imageSha256": "5e406652d6a2ee8ca1c51131390339ec53fab7dabd689dc92827025502c19daa",
+			"payloadCheckOk": true,
+			"payloadCheckMessage": null,
 			"endpoint": "https://integrate.api.nvidia.com/v1/chat/completions",
-			"maxTokens": 2048,
-			"promptChars": 0,
+			"promptChars": 1811,
 			"note": "dry run: request built, not sent"
 		},
 		{
@@ -204,9 +233,10 @@
 			"viewport": "1440x900",
 			"imageBytes": 87177,
 			"imageSha256": "a898c30d6bb8c0ecbefe7328d4eb4c06adf434cb9996aea6590e9dde84cc270c",
+			"payloadCheckOk": true,
+			"payloadCheckMessage": null,
 			"endpoint": "https://integrate.api.nvidia.com/v1/chat/completions",
-			"maxTokens": 2048,
-			"promptChars": 0,
+			"promptChars": 1811,
 			"note": "dry run: request built, not sent"
 		},
 		{
@@ -216,9 +246,10 @@
 			"viewport": "1440x900",
 			"imageBytes": 118068,
 			"imageSha256": "336d952536b2b5604e1bee6be8256f040c74aa184de8cc66d5e18d3dbbcf52d0",
+			"payloadCheckOk": true,
+			"payloadCheckMessage": null,
 			"endpoint": "https://integrate.api.nvidia.com/v1/chat/completions",
-			"maxTokens": 2048,
-			"promptChars": 0,
+			"promptChars": 1811,
 			"note": "dry run: request built, not sent"
 		},
 		{
@@ -228,21 +259,23 @@
 			"viewport": "1440x900",
 			"imageBytes": 126844,
 			"imageSha256": "30066ea1fa16466bff95b19a217ec78e7942f95090dbaa81ff9e7b0c9881ad4b",
+			"payloadCheckOk": true,
+			"payloadCheckMessage": null,
 			"endpoint": "https://integrate.api.nvidia.com/v1/chat/completions",
-			"maxTokens": 2048,
-			"promptChars": 0,
+			"promptChars": 1811,
 			"note": "dry run: request built, not sent"
 		},
 		{
 			"id": "admin-preview-desktop",
 			"model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
-			"route": "/preview/insights/cmvf0c2rc00001r0fe74pcpef",
+			"route": "/preview/insights/cmvf9isvs0000fo0f7cyb8bzi",
 			"viewport": "1440x900",
 			"imageBytes": 196269,
 			"imageSha256": "08170d1e4b8a1d01355e6cbd1005e5b54586d8fa4b9fea92d85e3e4a260d97fd",
+			"payloadCheckOk": true,
+			"payloadCheckMessage": null,
 			"endpoint": "https://integrate.api.nvidia.com/v1/chat/completions",
-			"maxTokens": 2048,
-			"promptChars": 0,
+			"promptChars": 1811,
 			"note": "dry run: request built, not sent"
 		},
 		{
@@ -250,11 +283,12 @@
 			"model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
 			"route": "/",
 			"viewport": "768x1024",
-			"imageBytes": 179844,
-			"imageSha256": "a02358f17bbe184c82670aae3e783b4f98e1a36236642b3e1829539190b787c6",
+			"imageBytes": 180580,
+			"imageSha256": "59fb2e88a21b2e9e61baedb58cafb259d10eb093eb3c385bd6a08dc747917752",
+			"payloadCheckOk": true,
+			"payloadCheckMessage": null,
 			"endpoint": "https://integrate.api.nvidia.com/v1/chat/completions",
-			"maxTokens": 2048,
-			"promptChars": 0,
+			"promptChars": 1811,
 			"note": "dry run: request built, not sent"
 		},
 		{
@@ -262,11 +296,12 @@
 			"model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
 			"route": "/",
 			"viewport": "390x844",
-			"imageBytes": 160109,
-			"imageSha256": "aaaf180b0722de72a523ad8336563d7718ed1b32a60098d27fe642a01ff5d159",
+			"imageBytes": 160427,
+			"imageSha256": "8ca15a74137cb4922d3cc9f5387047d3f5cf6f442357473457c7112b123714d8",
+			"payloadCheckOk": true,
+			"payloadCheckMessage": null,
 			"endpoint": "https://integrate.api.nvidia.com/v1/chat/completions",
-			"maxTokens": 2048,
-			"promptChars": 0,
+			"promptChars": 1811,
 			"note": "dry run: request built, not sent"
 		},
 		{
@@ -276,9 +311,10 @@
 			"viewport": "390x844",
 			"imageBytes": 53400,
 			"imageSha256": "18c7cf0a1242a5ac1d2a02e9d67f7928424fa302ac9c735192ef7f577feb2102",
+			"payloadCheckOk": true,
+			"payloadCheckMessage": null,
 			"endpoint": "https://integrate.api.nvidia.com/v1/chat/completions",
-			"maxTokens": 2048,
-			"promptChars": 0,
+			"promptChars": 1811,
 			"note": "dry run: request built, not sent"
 		},
 		{
@@ -288,9 +324,10 @@
 			"viewport": "390x844",
 			"imageBytes": 57928,
 			"imageSha256": "beccb22cb5eed928d3a3c9db788d2bfa82dc6ce337d6fda51b6927c9e2a1d93e",
+			"payloadCheckOk": true,
+			"payloadCheckMessage": null,
 			"endpoint": "https://integrate.api.nvidia.com/v1/chat/completions",
-			"maxTokens": 2048,
-			"promptChars": 0,
+			"promptChars": 1811,
 			"note": "dry run: request built, not sent"
 		},
 		{
@@ -300,9 +337,10 @@
 			"viewport": "390x844",
 			"imageBytes": 175055,
 			"imageSha256": "cb49c4b0689002cb2837256a4334b140b9434370f65f9f53681b16150c9bdb16",
+			"payloadCheckOk": true,
+			"payloadCheckMessage": null,
 			"endpoint": "https://integrate.api.nvidia.com/v1/chat/completions",
-			"maxTokens": 2048,
-			"promptChars": 0,
+			"promptChars": 1811,
 			"note": "dry run: request built, not sent"
 		},
 		{
@@ -310,11 +348,12 @@
 			"model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
 			"route": "/",
 			"viewport": "390x844",
-			"imageBytes": 54097,
-			"imageSha256": "4ea5f2b110f65b487a58e299087104bc3db11873a62b1c2413cf7edc6aa10c7d",
+			"imageBytes": 52663,
+			"imageSha256": "5615a7022e005cf599577a1918ed68d47880f8f86b38499977c907af8c675903",
+			"payloadCheckOk": true,
+			"payloadCheckMessage": null,
 			"endpoint": "https://integrate.api.nvidia.com/v1/chat/completions",
-			"maxTokens": 2048,
-			"promptChars": 0,
+			"promptChars": 1811,
 			"note": "dry run: request built, not sent"
 		},
 		{
@@ -322,11 +361,12 @@
 			"model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
 			"route": "/",
 			"viewport": "320x568",
-			"imageBytes": 157092,
-			"imageSha256": "4ef5c964872e86265f0a60275cdfefc48baa6b79b23a8252a1d8b38906f60284",
+			"imageBytes": 156004,
+			"imageSha256": "5565316b0ad728328594487ad10247285e70b6e721a48caeb234fbf23552518a",
+			"payloadCheckOk": true,
+			"payloadCheckMessage": null,
 			"endpoint": "https://integrate.api.nvidia.com/v1/chat/completions",
-			"maxTokens": 2048,
-			"promptChars": 0,
+			"promptChars": 1811,
 			"note": "dry run: request built, not sent"
 		}
 	]

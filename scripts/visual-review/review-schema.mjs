@@ -1,11 +1,14 @@
-// Structured-review contract for the NVIDIA VLM response
-// (DSMP-VISION-WORKFLOW-1.0.0 §6). A review only counts as valid when it
-// passes this schema; malformed output is reported explicitly, never
-// silently treated as success.
+// Structured-review contract, version 2 (DSHPODCAST-GLM-NVIDIA-VISION-WORKFLOW-2.0.0 §5C).
+// A review only counts as valid when it passes this schema; malformed output
+// is reported explicitly, never silently treated as success.
 
 import { z } from 'zod';
 
-export const SEVERITIES = ['critical', 'high', 'medium', 'low', 'observation'];
+/** Version of the review contract; the VLM is instructed to echo it. */
+export const SCHEMA_VERSION = 2;
+
+/** Fixed severity vocabulary (mandate §5C). */
+export const SEVERITIES = ['critical', 'high', 'medium', 'low', 'nit'];
 
 export const findingSchema = z.object({
 	id: z.string().min(1),
@@ -13,11 +16,13 @@ export const findingSchema = z.object({
 	category: z.string().min(1),
 	description: z.string().min(1),
 	visual_evidence: z.string().min(1),
+	expected_user_impact: z.string().min(1),
 	recommended_fix: z.string().min(1),
 	confidence: z.string().min(1)
 });
 
 export const reviewSchema = z.object({
+	schema_version: z.coerce.number().default(SCHEMA_VERSION),
 	model_id: z.string().min(1),
 	route: z.string().min(1),
 	viewport: z.string().min(1),

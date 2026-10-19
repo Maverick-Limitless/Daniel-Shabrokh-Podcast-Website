@@ -1,5 +1,5 @@
 // NVIDIA Vision-Language Model client for the visual-QA workflow
-// (DSMP-VISION-WORKFLOW-1.0.0 §6).
+// (DSHPODCAST-GLM-NVIDIA-VISION-WORKFLOW-2.0.0 §5C).
 //
 // API contract (verified against the official hosted endpoint):
 //   POST {base}/chat/completions   (OpenAI-compatible)
@@ -9,42 +9,66 @@
 //       image_url: { url: 'data:image/png;base64,…' } } ] }],
 //     max_tokens, temperature, stream: false }
 //   response: { choices: [{ message: { content }, finish_reason }], … }
-// The base default (https://integrate.api.nvidia.com/v1) was confirmed live;
-// exact image-size and rate limits are not published in the static catalog
-// (the page states "Rate limits may vary by model"), so the client guards
-// payload size and handles 429s with bounded retries.
+// The base default (https://integrate.api.nvidia.com/v1) was confirmed live
+// (2026-10-19: catalog answers unauthenticated; retired models return 410
+// pre-auth; available models return 401 pre-auth). Exact image-size and rate
+// limits are not published in the static catalog, so payloads are validated
+// client-side and 413/429s are classified and handled.
 
-import { reviewSchema } from './review-schema.mjs';
+import { reviewSchema, SCHEMA_VERSION } from './review-schema.mjs';
 
-export const REVIEW_PROMPT = `You are acting as a demanding senior product designer, visual QA engineer, responsive-design reviewer, and accessibility-aware interface critic.
+/** Default image-payload guard; override via VISUAL_REVIEW_MAX_IMAGE_BYTES. */
+export const MAX_IMAGE_BYTES = 4 * 1024 * 1024;
 
-Inspect the supplied screenshot as a rendered production interface. Evaluate visual hierarchy, typography, alignment, spacing, grid consistency, editorial composition, responsive behavior, component consistency, media presentation, interaction affordances, visible accessibility issues, clipping, overflow, overlap, and unnecessary visual complexity.
+export const REVIEW_PROMPT = `You are a demanding senior product designer and visual QA engineer reviewing one rendered screenshot of a premium editorial podcast platform (disciplined ink/navy tones, warm ivory, restrained gold accents, strong editorial typography, deliberate asymmetry).
 
-Assess the interface against a premium editorial podcast platform: disciplined ink/navy tones, warm ivory, restrained gold accents, strong typography, deliberate asymmetry, clear content hierarchy, and purposeful motion.
+Judge ONLY what is visible in the image: visual hierarchy, layout and grid consistency, spacing, typography, alignment, responsive behavior visible in this frame, clipping, overflow, overlap, contrast as it appears, component consistency, media presentation, interaction affordances, and conspicuous usability defects.
 
-Do not invent defects that cannot reasonably be inferred from the image. Distinguish confirmed visible defects from uncertain observations. Do not claim to have tested functionality that a screenshot cannot establish.
+Do NOT infer invisible behavior, functionality, business facts, code-level causes, or accessibility compliance from pixels alone. Do not invent defects you cannot point to in the image. Anything that cannot be grounded in the screenshot must be omitted.
 
 Return ONLY machine-readable JSON (no prose, no markdown fences) with exactly this shape:
 {
+  "schema_version": ${SCHEMA_VERSION},
   "model_id": "<your model id>",
   "route": "<route provided in the context>",
   "viewport": "<viewport provided in the context>",
   "overall_score": <1-10>,
   "findings": [
-    { "id": "<stable id>", "severity": "critical|high|medium|low|observation",
+    { "id": "<stable id>", "severity": "critical|high|medium|low|nit",
       "category": "<e.g. typography|spacing|alignment|responsive|contrast|media|composition>",
       "description": "<what is wrong and why it matters>",
-      "visual_evidence": "<where in the screenshot this is visible>",
-      "recommended_fix": "<concrete correction>",
+      "visual_evidence": "<where in the image this is visible>",
+      "expected_user_impact": "<the impact on a visitor if left unfixed>",
+      "recommended_fix": "<a concrete, testable correction>",
       "confidence": "high|medium|low" }
   ],
   "strengths": ["<what works well>"],
   "release_blockers": ["<findings that block release, if any>"]
-}`;
+}
+Severity "nit" is reserved for the most minor cosmetic observations. An empty findings array is a valid answer.`;
 
-/** Image payload guard: the hosted API's exact image-size limit is not
- *  published in the static catalog; keep requests conservative. */
-export const MAX_IMAGE_BYTES = 4 * 1024 * 1024;
+/** Allowed screenshot MIME types. */
+export const ALLOWED_IMAGE_MIME = ['image/png', 'image/jpeg'];
+
+/**
+ * Validates an image payload before any request is built (mandate §5A).
+ * Returns { ok: true } or { ok: false, message }.
+ */
+export function validateImagePayload({ bytes, mimeType, maxImageBytes = MAX_IMAGE_BYTES }) {
+	if (!Number.isInteger(bytes) || bytes <= 0) {
+		return { ok: false, message: 'Invalid image payload: size must be a positive integer' };
+	}
+	if (!ALLOWED_IMAGE_MIME.includes(mimeType)) {
+		return { ok: false, message: `Unsupported image MIME type ${mimeType}; allowed: ${ALLOWED_IMAGE_MIME.join(', ')}` };
+	}
+	if (bytes > maxImageBytes) {
+		return {
+			ok: false,
+			message: `Image is ${bytes} bytes, above the ${maxImageBytes}-byte review limit (base64 inflates it ~4/3 at send time). Use a smaller/viewport-only capture or raise VISUAL_REVIEW_MAX_IMAGE_BYTES.`
+		};
+	}
+	return { ok: true };
+}
 
 /**
  * Builds the exact request that will be sent. Pure and deterministic — the
@@ -84,8 +108,9 @@ export function buildReviewRequest({ baseUrl, apiKey, model, imageBase64, route,
 
 /**
  * Classifies an API failure into a distinct kind with an actionable message
- * (mandate §3): authentication, authorization, rate limit, model
- * availability, invalid request, model-side failure, timeout, or network.
+ * (mandate §5C): authentication, authorization, rate limit, payload size,
+ * unsupported media, model availability, invalid request, model-side
+ * failure, timeout, or network.
  */
 export function classifyApiError(error) {
 	const status = error?.status ?? error?.statusCode;
@@ -101,48 +126,73 @@ export function classifyApiError(error) {
 	if (status === 401) return { kind: 'authentication', retryable: false, message: `Authentication failed (401): the API key is missing, invalid, or expired. ${bodyText}`.trim() };
 	if (status === 403) return { kind: 'authorization', retryable: false, message: `Authorization failed (403): the key does not permit this model/endpoint. ${bodyText}`.trim() };
 	if (status === 429) return { kind: 'rate_limit', retryable: true, message: `Rate limited (429): backing off before retrying. ${bodyText}`.trim() };
+	if (status === 413) return { kind: 'payload_too_large', retryable: false, message: `Payload too large (413): the image exceeds the endpoint's limit. Reduce image bytes — e.g. use a viewport-only capture. ${bodyText}`.trim() };
+	if (status === 415) return { kind: 'unsupported_media', retryable: false, message: `Unsupported media type (415): the endpoint rejected the image encoding. ${bodyText}`.trim() };
 	if (status === 404 || status === 410) return { kind: 'model_unavailable', retryable: false, message: `Model unavailable (${status}): the model ID does not exist or has been retired on this endpoint. ${bodyText}`.trim() };
 	if (status === 400 || status === 422) return { kind: 'invalid_request', retryable: false, message: `Invalid request (${status}): check image encoding/size and request schema. ${bodyText}`.trim() };
 	if (status >= 500) return { kind: 'model_error', retryable: true, message: `Model-side failure (${status}). ${bodyText}`.trim() };
 	return { kind: 'unknown', retryable: false, message: `Unexpected API response (${status}). ${bodyText}`.trim() };
 }
 
-/** Extracts the first balanced JSON object from arbitrary text. */
-function extractJson(text) {
-	const start = text.indexOf('{');
-	if (start === -1) return null;
-	let depth = 0;
-	let inString = false;
-	let escaped = false;
-	for (let i = start; i < text.length; i++) {
-		const ch = text[i];
-		if (escaped) {
-			escaped = false;
-			continue;
+/**
+ * Extracts every balanced top-level JSON object embedded in arbitrary text,
+ * in order of appearance. String-aware, so braces inside quoted values,
+ * escaped quotes, or code fences do not confuse the depth tracking.
+ */
+export function extractJsonObjects(text) {
+	const objects = [];
+	let i = 0;
+	while (i < text.length) {
+		const start = text.indexOf('{', i);
+		if (start === -1) break;
+		let depth = 0;
+		let inString = false;
+		let escaped = false;
+		let closed = false;
+		for (let j = start; j < text.length; j++) {
+			const ch = text[j];
+			if (escaped) {
+				escaped = false;
+				continue;
+			}
+			if (ch === '\\') {
+				escaped = true;
+				continue;
+			}
+			if (ch === '"') inString = !inString;
+			if (inString) continue;
+			if (ch === '{') depth++;
+			if (ch === '}') {
+				depth--;
+				if (depth === 0) {
+					objects.push(text.slice(start, j + 1));
+					i = j + 1;
+					closed = true;
+					break;
+				}
+			}
 		}
-		if (ch === '\\') {
-			escaped = true;
-			continue;
-		}
-		if (ch === '"') inString = !inString;
-		if (inString) continue;
-		if (ch === '{') depth++;
-		if (ch === '}') {
-			depth--;
-			if (depth === 0) return text.slice(start, i + 1);
-		}
+		if (!closed) break; // unterminated object: stop scanning
 	}
-	return null;
+	return objects;
 }
 
 const REFUSAL_MARKERS = ["I can't", 'I cannot', 'I am unable', 'not able to assist'];
 
+/** Grounds a validated review in the actual capture metadata. */
+function finishReview(data, { expectedRoute, expectedViewport }) {
+	// Ground the review in the actual capture metadata rather than trusting
+	// the model's self-report of route/viewport.
+	data.route = expectedRoute ?? data.route;
+	data.viewport = expectedViewport ?? data.viewport;
+	return { ok: true, data, extraction: 'lenient' };
+}
+
 /**
  * Parses and validates a raw chat/completions response body.
  * Returns one of:
- *   { ok: true, data }                      — schema-valid review
- *   { ok: false, reason, message }           — refusal | truncated | malformed | invalid
- * `extraction` reports how the JSON was obtained ('direct' or 'lenient').
+ *   { ok: true, data, extraction }             — schema-valid review
+ *   { ok: false, reason, message, extraction }  — refusal | truncated | malformed | invalid
  */
 export function parseReviewResponse(rawBody, { expectedRoute, expectedViewport } = {}) {
 	let parsed;
@@ -163,44 +213,48 @@ export function parseReviewResponse(rawBody, { expectedRoute, expectedViewport }
 		return { ok: false, reason: 'truncated', message: 'Model response was truncated (finish_reason=length); raise max_tokens or reduce the prompt', extraction: 'none' };
 	}
 
-	const direct = extractJson(content);
-	if (!direct) {
+	const candidates = extractJsonObjects(content);
+	if (candidates.length === 0) {
 		const refusal = REFUSAL_MARKERS.some((marker) => content.toLowerCase().includes(marker.toLowerCase()));
 		return refusal
 			? { ok: false, reason: 'refusal', message: `Model refused to review: ${content.slice(0, 160)}`, extraction: 'none' }
 			: { ok: false, reason: 'malformed', message: `No JSON object found in response: ${content.slice(0, 160)}`, extraction: 'none' };
 	}
 
-	let candidate;
-	try {
-		candidate = JSON.parse(direct);
-	} catch {
-		return { ok: false, reason: 'malformed', message: 'Embedded JSON could not be parsed (possibly truncated)', extraction: 'lenient' };
-	}
-
-	const validated = reviewSchema.safeParse(candidate);
-	if (!validated.success) {
-		return {
-			ok: false,
+	// Try each embedded object in order and keep the first that parses AND
+	// passes the review schema, so leading junk JSON (stray metadata, prose
+	// examples) cannot break extraction of the actual review.
+	let lastError = null;
+	for (const candidateText of candidates) {
+		let candidate;
+		try {
+			candidate = JSON.parse(candidateText);
+		} catch {
+			lastError = { reason: 'malformed', message: 'Embedded JSON could not be parsed (possibly truncated)' };
+			continue;
+		}
+		const validated = reviewSchema.safeParse(candidate);
+		if (validated.success) {
+			return finishReview(validated.data, { expectedRoute, expectedViewport });
+		}
+		lastError = {
 			reason: 'invalid',
-			message: `Schema validation failed: ${validated.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`).join('; ')}`,
-			extraction: 'lenient'
+			message: `Schema validation failed: ${validated.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`).join('; ')}`
 		};
 	}
 
-	const data = validated.data;
-	// Ground the review in the actual capture metadata rather than trusting
-	// the model's self-report of route/viewport.
-	data.route = expectedRoute ?? data.route;
-	data.viewport = expectedViewport ?? data.viewport;
-
-	return { ok: true, data, extraction: 'lenient' };
+	return {
+		ok: false,
+		reason: lastError?.reason ?? 'malformed',
+		message: lastError?.message ?? 'No valid review object in response',
+		extraction: 'lenient'
+	};
 }
 
 /**
- * Bounded retry wrapper (mandate §3): retries only errors classified as
+ * Bounded retry wrapper (mandate §5C): retries only errors classified as
  * retryable (rate limits, model-side 5xx, timeouts, network), with linear
- * backoff. Returns { result } or throws the last error after N attempts.
+ * backoff. Never retries permanent authentication/authorization/model errors.
  */
 export async function withRetries(fn, { retries = 2, delayMs = 2000, onRetry, sleep = (ms) => new Promise((r) => setTimeout(r, ms)) } = {}) {
 	let lastError;

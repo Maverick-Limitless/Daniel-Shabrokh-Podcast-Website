@@ -1,30 +1,65 @@
 # DSMP — Daniel Shabrokh Media Platform
 
-A premium, independent editorial, video, and audio publishing platform: a public
-site (Watch / Listen / Insights / About / Search) and a secure single-administrator
-CMS with a full draft → preview → publish workflow.
+A premium, independent editorial, video, and audio publishing platform built as
+a **proposal**: a public site (Watch / Listen / Insights / About / Search) with
+a secure single-administrator CMS and a full draft → preview → publish workflow.
 
-**Status:** fully implemented and tested locally. No production deployment has
-been performed. All seeded content is `[DEV]`-labeled placeholder material that
-must be replaced with verified content (see "Content policy" below).
+> **Status and independence.** This is an independent proposal, not Daniel
+> Shabrokh's official website. It has no affiliation with, endorsement from,
+> or authorization by Daniel Shabrokh or the 2See podcast, and all seeded
+> content is clearly labeled `[DEV]` placeholder material awaiting
+> owner-verified replacement. Nothing has been deployed publicly. See
+> [docs/RELEASE_STATUS.md](docs/RELEASE_STATUS.md) for the current release
+> gates and [docs/PROJECT_BRIEF_AND_HISTORY.md](docs/PROJECT_BRIEF_AND_HISTORY.md)
+> for the full project brief and Git-backed history.
+
+## Features (implemented and verified by tests)
+
+**Public site** — home with hero and three content sections; Watch archive +
+video detail (YouTube privacy-enhanced embeds behind click-to-load facades so
+no third-party JS loads until the visitor plays); Listen archive + episode
+detail with a single shared audio player that persists across client-side
+navigation; Insights archive + article pages with sanitized Markdown, table
+of contents, and reading time; About (deliberate "pending verification"
+states — no invented biography); Search across published content only
+(drafts are never visible); Privacy; deliberate 404/error/empty states;
+sitemap.xml and robots.txt generated from published content; canonical +
+Open Graph metadata.
+
+**Admin CMS** (`/admin`) — dashboard with real database counts; per-type
+lists with search/filter; create/edit/save-draft/preview/publish/unpublish/
+archive/restore/delete (deletion requires a no-JS confirmation step);
+server-side validation with duplicate-slug rejection; draft preview route
+that never exposes content publicly; audit log of administrative events.
+
+**Security** — argon2id password hashing; opaque session tokens stored only
+as SHA-256 hashes; HttpOnly/SameSite=Lax/Secure-on-HTTPS cookies with
+sliding 12-hour expiry and a 7-day cap; login rate limiting; generic errors
+with timing equalization; forced first-password change; password changes
+invalidate other sessions; CSRF origin checking; strict CSP (`default-src
+'self'`, hashed bootstrap scripts, no inline handlers); security headers;
+noindex/no-store on admin and preview; parameterized queries only; Markdown
+sanitized server-side (unit- and E2E-proven against XSS payloads).
+
+**Deliberately not built** (out of scope by mandate): public user
+registration, multi-role permissions, comments/social features, payments,
+custom video hosting, analytics, email flows.
 
 ## Stack
 
 - [SvelteKit 3](https://svelte.dev/docs/kit) + Svelte 5 (runes) + TypeScript
-- [Prisma 7](https://www.prisma.io) with SQLite (single-instance deployments)
-- argon2id password hashing ([@node-rs/argon2](https://github.com/napi-rs/node-rs/tree/main/crates/argon2))
-- Server-side sessions stored **hashed** in the database (opaque random tokens)
-- Vitest (unit) + Playwright (browser E2E) + axe-core (accessibility)
+- [Prisma 7](https://www.prisma.io) + SQLite (better-sqlite3 adapter) for single-instance deployments
+- [@node-rs/argon2](https://github.com/napi-rs/node-rs/tree/main/crates/argon2) for password hashing
+- Vitest (unit) + Playwright (E2E) + axe-core (accessibility)
 - Self-hosted variable fonts (Fraunces, Newsreader, Inter) — no third-party font CDN
-
-Dependency hygiene: `pnpm.overrides` pins `lodash ≥ 4.18` — the only audit
-findings (1 high, 2 moderate) were lodash 4.17.21 reached exclusively through
-Prisma Studio's bundled UI tooling (`@prisma/studio-core → @visx/*`);
-`pnpm audit` now reports zero known vulnerabilities.
+- Dependency hygiene: `pnpm.overrides` pins `lodash ≥ 4.18` — the only audit
+  findings (1 high, 2 moderate) were lodash 4.17.21 reached exclusively through
+  Prisma Studio's bundled UI tooling; `pnpm audit` reports zero known
+  vulnerabilities.
 
 ## Requirements
 
-- Node.js ≥ 20 (developed on 26), pnpm ≥ 9, SQLite 3
+Node.js ≥ 20 (developed on 26), pnpm ≥ 9, SQLite 3.
 
 ## Quick start (development)
 
@@ -36,9 +71,8 @@ pnpm admin:create -- --username <your-name>   # prints a one-time temporary pass
 pnpm dev                      # http://localhost:5173
 ```
 
-Sign in at `/admin/login`. On first sign-in you are forced to set a permanent
-password before anything else. To exercise the UI with clearly labeled
-placeholder content:
+Sign in at `/admin/login`; you are forced to set a permanent password before
+anything else. To exercise the UI with labeled placeholder content:
 
 ```sh
 pnpm db:seed-dev   # [DEV]-labeled fixtures; refuses to run with NODE_ENV=production
@@ -46,205 +80,169 @@ pnpm db:seed-dev   # [DEV]-labeled fixtures; refuses to run with NODE_ENV=produc
 
 ## Environment variables
 
-| Variable | Required | Purpose |
-| --- | --- | --- |
-| `DATABASE_URL` | yes | SQLite URL, e.g. `file:/srv/dsh/app.db`. **Use an absolute path** — the Prisma CLI resolves relative paths against `prisma/`, the runtime against the process working directory, so relative paths can silently point at two different files. |
-| `SITE_BASE_URL` | no | Canonical public origin (no trailing slash) used for canonical URLs, Open Graph tags, robots.txt and the sitemap. Empty falls back to the request origin. |
-| `KIT_ORIGIN` | build-time, optional | Baked into a production build (`kit.paths.origin`) for direct-to-Node deployments and local production-style testing: `KIT_ORIGIN=https://your.domain pnpm build`. Leave unset when running behind a reverse proxy. |
-| `PROTOCOL_HEADER` / `HOST_HEADER` | proxy only | Set on the reverse proxy (e.g. `x-forwarded-proto` / `x-forwarded-host`); the Node adapter then derives each request's origin from those headers. Without them the adapter assumes `https`. |
+Safe placeholders live in `.env.example` — copy it to `.env`. Key variables:
 
-There is **no session secret**: sessions are opaque 32-byte random tokens; the
-database stores only their SHA-256 hash. Missing required configuration fails
-at startup with a clear error (Kit validates `DATABASE_URL` via `src/env.ts`).
+| Variable | Purpose |
+| --- | --- |
+| `DATABASE_URL` | SQLite URL. **Use an absolute path** (`file:/srv/dsh/app.db`): the Prisma CLI and the runtime resolve relative paths differently. |
+| `SITE_BASE_URL` | Canonical public origin for canonical/OG/robots/sitemap; empty falls back to the request origin. |
+| `KIT_ORIGIN` | Build-time origin baked into a production build for direct-to-Node deployments; leave unset behind a proxy (which should send `PROTOCOL_HEADER`/`HOST_HEADER`). |
+| `NVIDIA_API_KEY` / `NVIDIA_VISION_MODEL` / `NVIDIA_VISION_BASE_URL` | **Development-only** visual-review workflow (see below); never used by the website runtime. |
 
-## Administrator initialization & password recovery (PRD §6.2/§6.5)
+No session secret exists: sessions are opaque random tokens stored hashed.
+Missing required configuration fails at startup with a clear error.
+
+## Administrator provisioning and recovery
 
 ```sh
 pnpm admin:create -- --username <name>          # initial creation (idempotent)
 pnpm admin:create -- --username <name> --reset  # recovery — SERVER SHELL ONLY
 ```
 
-- Refuses to overwrite an existing administrator without `--reset`.
-- Prints a cryptographically secure temporary password **once**, never stores or
-  logs it, and sets `mustChangePassword` — the UI forces a permanent password
-  before any other admin action.
-- Recovery is deliberately a server-side procedure: there is **no public
-  "forgot password" endpoint** and no fake email flow. `--reset` rotates the
-  credential and invalidates all sessions; run it only with deployment access.
-- Changing the password in Settings invalidates every other session and
-  rotates the current one.
+The temporary password is printed once, never stored or logged, and forces a
+password change at first sign-in. Recovery is deliberately a server-side
+procedure: there is no public "forgot password" endpoint and no fake email
+flow. Changing the password invalidates every other session.
 
-## Testing
+## Commands
 
-```sh
-pnpm check      # svelte-check (types)
-pnpm test       # 34 unit tests (validation, Markdown sanitization, WCAG contrast of the design tokens)
-pnpm test:e2e   # 33 browser tests: builds for production, boots the real server,
-                # covers auth, CMS lifecycle, audio player, responsive matrix,
-                # axe accessibility, and captures review screenshots to
-                # tests/screenshots/
-```
+| Command | What it does |
+| --- | --- |
+| `pnpm dev` | Development server |
+| `pnpm build` | Production build (`KIT_ORIGIN=… pnpm build` for direct-to-Node) |
+| `pnpm start` | Run the built server (`node build/index.js`) |
+| `pnpm check` | svelte-check type checking |
+| `pnpm test` | Unit tests (81 passed as of 2026-10-19) |
+| `pnpm test:e2e` | Playwright E2E against a fresh production build (38 passed as of 2026-10-19) |
+| `pnpm admin:create` / `pnpm db:seed-dev` / `pnpm db:migrate` / `pnpm db:deploy` | Admin provisioning, `[DEV]` seeding, migrations |
+| `pnpm visual:review` / `pnpm visual:review:dry` | **Development-only** NVIDIA visual-review workflow (below) |
 
-E2E credentials are generated per run (or supplied via `TEST_ADMIN_TEMP_PASSWORD` /
-`TEST_ADMIN_FINAL_PASSWORD`); nothing is committed. The suite runs against an
-isolated database (`data/e2e.db`) with `[DEV]` fixtures — never your real data.
-
-## Health check
-
-`GET /healthz` returns `200 {"ok":true}` after answering a real database query,
-or `503 {"ok":false}` when the database is unreachable — suitable for uptime
-monitors, load balancers, and post-deploy smoke checks.
-
-## Performance (laboratory measurements)
-
-`node scripts/measure-web-vitals.mjs` (after building with
-`KIT_ORIGIN=http://localhost:43933 pnpm build`) loads the five key pages in a
-real Chromium window, three runs per page, and reports Core Web Vitals. Lab
-record from the release verification run (localhost production build — this is
-**not** field data from real users):
-
-| Metric | Target | Measured (lab) |
-| --- | --- | --- |
-| LCP | ≤ 2.5s | 148–2124ms across pages; one 3008ms outlier on the article page; every delivered median within target |
-| CLS | ≤ 0.1 | 0.000–0.004 on every run of every page |
-| Interaction latency (INP-style lab proxy) | ≤ 200ms | 16–136ms |
-| INP (field) | ≤ 200ms | **Not measured** — requires real-user data |
-
-Caveat: headless Chromium on this host inconsistently suppresses
-`largest-contentful-paint` entry delivery (the script therefore runs headed and
-reports the delivered-run count). Fonts are self-hosted; the only
-latency-relevant third party is the YouTube thumbnail on the home/watch facades.
+`GET /healthz` answers `200 {"ok":true}` after a real database query — for
+uptime monitors and post-deploy smoke checks.
 
 ## Production build & run
 
 ```sh
 KIT_ORIGIN=https://your.domain pnpm build   # or omit when behind a proxy
+pnpm exec prisma migrate deploy             # apply migrations first
 DATABASE_URL=file:/srv/dsh/app.db NODE_ENV=production PORT=3000 node build/index.js
 ```
 
-Reverse-proxy checklist (nginx/Caddy/…):
+Reverse-proxy checklist: terminate TLS; add HSTS at the proxy (the app
+intentionally does not send it); forward `x-forwarded-proto`/`x-forwarded-host`
+and run with `PROTOCOL_HEADER`/`HOST_HEADER`. CSRF: cross-origin form POSTs
+are rejected by SvelteKit's origin check; session cookies are `HttpOnly`,
+`SameSite=Lax`, `Secure` on HTTPS. CSP: `default-src 'self'` with hashed
+bootstrap scripts; YouTube is only a frame source, behind click-to-load.
 
-- Terminate TLS; add HSTS at the proxy (the app intentionally does not send it).
-- Forward `x-forwarded-proto` and `x-forwarded-host`, and run the app with
-  `PROTOCOL_HEADER=x-forwarded-proto HOST_HEADER=x-forwarded-host`.
-- Apply migrations first: `pnpm exec prisma migrate deploy` (with `DATABASE_URL`
-  pointing at the production file).
-
-CSRF: cross-origin form POSTs are rejected by SvelteKit's origin check;
-session cookies are `HttpOnly`, `SameSite=Lax`, `Secure` on HTTPS.
-CSP: `default-src 'self'` with hashed SvelteKit bootstrap scripts; YouTube is
-only permitted as a frame source (`youtube-nocookie.com`), and embeds use a
-click-to-load facade so no third-party JS loads until the visitor plays.
-
-## Backup & restore (SQLite)
-
-The database is a single file. While the app can be briefly stopped:
+Backup/restore (single SQLite file):
 
 ```sh
 sqlite3 /srv/dsh/app.db ".backup '/srv/backups/dsh-$(date +%F).db'"
-# restore: stop the app, replace app.db with the backup, start the app
+# restore: stop the app, replace the db file with the backup, start the app
 ```
 
-## Updating
+Updating: `git pull && pnpm install && pnpm exec prisma migrate deploy && pnpm build`
+and restart the process. **No production deployment has been performed.**
 
-```sh
-git pull && pnpm install
-pnpm exec prisma migrate deploy
-pnpm build && (restart the node process)
+## Performance (laboratory measurements)
+
+`node scripts/measure-web-vitals.mjs` (after building with
+`KIT_ORIGIN=http://localhost:43933 pnpm build`) measures LCP/CLS/interaction
+latency in a real Chromium window, three runs per page. Lab record:
+LCP 148–2124ms (one 3008ms outlier), CLS 0.000–0.004 on every run,
+interactions 16–136ms. These are localhost laboratory numbers, **not**
+field data; field INP is not measured. Headless Chromium on this host
+inconsistently suppresses LCP entry delivery, so the script runs headed.
+
+## Architecture
+
+```
+prisma/schema.prisma        data model (Administrator, Session, Article, Video, AudioEpisode, AdminEvent)
+src/routes/                 public pages, /admin (CMS), /preview (draft preview), /healthz
+src/lib/server/             auth, guard, cms services, content queries, validation, Markdown sanitizer, audit
+src/lib/components/         header, footer, cards, YouTube facade, shared audio player
+src/lib/styles/             design tokens (WCAG-verified contrast) + global styles
+scripts/                    create-admin, seed fixtures, E2E prep, audio-fixture generator,
+                            measure-web-vitals, visual-review/ (development-only NVIDIA QA workflow)
+tests/                      unit (vitest), e2e (Playwright), screenshots, visual-review artifacts
+docs/                       project brief & history, visual-review workflow, release status
 ```
 
-## Visual QA — NVIDIA vision-language review (`pnpm visual:review`)
+## Visual QA workflow — development-only, strictly separated from the product
 
-A repeatable workflow that builds the app, boots the real production server
-on a verified-free port against a disposable `[DEV]` fixture database,
-captures a 27-shot screenshot inventory through a real browser, submits each
-capture to an NVIDIA vision-language model, and saves structured reviews.
+The NVIDIA vision-language review is an **external development-time
+reviewer**. It is not part of the website: no NVIDIA SDK, client, environment
+variable, or workflow code exists anywhere under `src/`, the production
+dependency graph, or the deployed runtime — enforced by a dedicated guard
+test (`tests/unit/product-boundary.test.ts`). Full details:
+[docs/VISUAL_REVIEW_WORKFLOW.md](docs/VISUAL_REVIEW_WORKFLOW.md).
 
-**Model decision (documented, per the vision-workflow mandate):** the
-originally requested `nvidia/nemotron-nano-12b-v2-vl` was verified against
-the official hosted API and found **end-of-life** —
-`POST integrate.api.nvidia.com/v1/chat/completions` returns
-`410 "…has reached its end of life on 2026-08-26…"`. The workflow therefore
-defaults to **`nvidia/nemotron-3.5-super-vl-120b-a12b`**, verified live in the
-public catalog and reachable (401 without credentials, not 410). Override
-with `NVIDIA_VISION_MODEL`; the EOL ID is explicitly refused with that
-evidence.
+- **Model status (verified 2026-10-19 against the live hosted API):** the
+  originally requested `nvidia/nemotron-nano-12b-v2-vl` is end-of-life
+  (HTTP 410, retired 2026-08-26) and is explicitly refused by the workflow.
+  The default is **`nvidia/nemotron-3.5-super-vl-120b-a12b`**, verified live
+  in the public catalog (available models return 401 without credentials;
+  retired ones return 410). Override with `NVIDIA_VISION_MODEL`.
+- **Commands:** `pnpm visual:review` (capture + live review; requires
+  `NVIDIA_API_KEY`) · `pnpm visual:review:dry` (capture + build every
+  request, send nothing — no key required).
+- **What it does:** fresh `[DEV]` fixture database → production build →
+  server on a verified-free port → 28 real browser captures (desktop 1440,
+  tablet 768, mobile 390, 320; full-page + interaction/focus/error states)
+  → schema-validated structured reviews → severity summary → artifacts.
+- **Artifacts:** `tests/visual-review/captures/` (28 PNGs),
+  `tests/visual-review/artifacts/inventory.json` (routes, viewports, sizes,
+  SHA-256s, browser and build identity, skip reasons) and
+  `dry-run-summary.json`. Per-shot review files and `summary.json` are
+  written only by a live run. The fixture database
+  (`data/visual-review.db`) is disposable and gitignored.
+- **Credentials:** read only from the environment, redacted from all logs
+  and artifacts (pattern-based scrubbing), never sent to the browser or
+  committed.
+- **Exit codes:** `0` review completed · `2` missing/invalid
+  configuration · `3` API failure (auth/rate/model/network) · `4` responses
+  failed schema validation · `5` local environment failure (port, build,
+  capture).
+- **Troubleshooting:** `401` invalid/missing key · `403` key lacks access ·
+  `429` rate limited (backoff + bounded retries) · `410/404` model
+  retired/unknown · `400/413` image size or encoding (captures over the
+  limit fall back to viewport-only variants) · timeouts/5xx retried.
+  Per-model rate limits are not published in the static catalog.
+- **Live status:** the authenticated live review has **not been executed**
+  — no `NVIDIA_API_KEY` is configured in this environment. The request/
+  response contract is unit-tested with deterministic fixtures, and the dry
+  run exercises the entire pipeline for real. Minimum step for a live
+  review: export a valid key and run `pnpm visual:review`.
 
-**Setup:** create a key at <https://build.nvidia.com> (account → Setup → Get
-API Key) and set the variables from `.env.example`
-(`NVIDIA_API_KEY`, optionally `NVIDIA_VISION_MODEL`, `NVIDIA_VISION_BASE_URL`,
-`VISUAL_REVIEW_PORT`). The key is read only from the environment, redacted
-from every log and artifact, and never sent to the browser or committed.
+## Content policy and media provenance
 
-**Commands:**
-
-```sh
-pnpm visual:review        # capture + live NVIDIA review (requires the key)
-pnpm visual:review:dry    # capture + build every request, send nothing
-```
-
-**Exit codes:** `0` review completed · `2` missing/invalid configuration ·
-`3` API failure (auth/rate/model/network) · `4` model responses failed schema
-validation · `5` local environment failure (port busy, build, capture).
-
-**Artifacts** (committed as evidence unless noted): screenshot inventory at
-`tests/visual-review/captures/`, structured per-shot reviews in
-`tests/visual-review/artifacts/reviews/`, plus `inventory.json`,
-`dry-run-summary.json`, and `summary.json` (severity counts, scores,
-release blockers). The fixture database (`data/visual-review.db`) is disposable
-and gitignored.
-
-**Troubleshooting:** `401` → invalid/missing key · `403` → key lacks access to
-this model · `429` → rate limited, the client backs off and retries twice ·
-`410/404` → model retired/unknown (check the model ID) · `400` → check image
-size (captures over 4 MB fall back to viewport-only variants) · timeouts and
-5xx are retried; per-model rate limits are not published in the static
-catalog, so requests are spaced and bounded.
-
-**Live status:** the live authenticated review has **not been executed** in
-this environment — no `NVIDIA_API_KEY` is configured. Everything short of the
-authenticated request is exercised: the request/response contract is
-unit-tested with deterministic fixtures (no network), and `visual:review:dry`
-runs the entire capture pipeline for real. Minimum step for a genuine live
-review: export a valid `NVIDIA_API_KEY` and run `pnpm visual:review`.
-
-## Content policy
-
-The About page intentionally shows restrained "pending verification" states:
-no biography, credentials, portrait, or official links are published until the
-owner supplies verified material. `pnpm db:seed-dev` inserts only clearly
-`[DEV]`-labeled placeholders (including a generated 30-second tone as the audio
-fixture) so layouts and tests can be exercised; it refuses to run in production.
-Video entries embed public YouTube content through the official
-privacy-enhanced player; nothing is scraped or re-hosted.
+The About page intentionally shows "pending verification" states: no
+biography, credentials, portrait, or official links are published until the
+owner supplies verified material. Seeded content is `[DEV]`-labeled — the
+video fixture is Big Buck Bunny (CC BY, Blender Foundation), the audio
+fixture is a generated 30-second tone, and the seeder refuses to run in
+production. Video is embedded only via YouTube's official privacy-enhanced
+player; nothing is scraped or re-hosted. Real biography, official links,
+episode data, and publication authorization all require owner
+confirmation — see
+[docs/PROJECT_BRIEF_AND_HISTORY.md](docs/PROJECT_BRIEF_AND_HISTORY.md).
 
 ## Known limitations
 
-- **No independent visual review was performed.** The PRD's NVIDIA
-  vision-language reviewer is unavailable in this environment (no configured
-  endpoint or credentials), and image inspection was not possible for the
-  implementing agent either. Real screenshots were captured
-  (`tests/screenshots/`, regenerated by `pnpm test:e2e`) and are archived for
-  human review; automated substitutes ran instead: WCAG contrast tests on the
-  design tokens, an overflow matrix at 320–1440px, axe-core scans (zero
-  serious/critical violations), and geometric layout-integrity checks
-  (no overlapping/clipped controls).
-- Search is case-insensitive for ASCII only (SQLite `LIKE` limitation).
-- Video availability (deleted/private YouTube videos) is not pre-checked; the
-  YouTube API is intentionally not integrated — a facade + fallback text covers
-  missing thumbnails, and the iframe surfaces YouTube's own unavailable notice.
+- No independent visual review yet (NVIDIA credentials absent; screenshots
+  are archived for human review at `tests/visual-review/captures/` and
+  `tests/screenshots/`). Automated substitutes that do run: WCAG contrast
+  tests on design tokens, overflow matrix (320–1440px), axe scans (zero
+  serious/critical), geometric layout-integrity checks.
+- Search is case-insensitive for ASCII only (SQLite `LIKE`).
+- YouTube availability (deleted/private videos) is not pre-checked; the
+  facade covers missing thumbnails and the iframe surfaces YouTube's notice.
 - No email delivery, no public user accounts, single administrator by design.
-- No social-sharing image (`og:image`) until an approved brand asset exists.
-- Sitemap/robots use `SITE_BASE_URL` when set, otherwise the request origin.
-
-## Repository map
-
-```
-prisma/schema.prisma       data model (Administrator, Session, Article, Video, AudioEpisode, AdminEvent)
-src/routes/                public pages, /admin (CMS), /preview (draft preview)
-src/lib/server/            auth, db, validation, markdown sanitizer, content queries, CMS services
-src/lib/components/        header, footer, cards, YouTube facade, shared audio player
-src/lib/styles/            design tokens (WCAG-verified) + global styles
-scripts/                   admin init, E2E preparation, audio-fixture generator
-tests/                     unit (vitest) + E2E (Playwright) + captured screenshots
-```
+- No `og:image` until an approved brand asset exists.
+- Sitemap/robots use `SITE_BASE_URL` when set, else the request origin.
+- Official NVIDIA doc portals (docs.nvidia.com, catalog.ngc.nvidia.com)
+  were not fetchable from this environment; model verification rests on
+  the live hosted endpoint's own responses (catalog list + pre-auth status
+  codes), recorded with timestamps in
+  [docs/VISUAL_REVIEW_WORKFLOW.md](docs/VISUAL_REVIEW_WORKFLOW.md).
