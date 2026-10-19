@@ -208,6 +208,8 @@ unit-tested with deterministic fixtures (no network), and `visual:review:dry`
 runs the entire capture pipeline for real. Minimum step for a genuine live
 review: export a valid `NVIDIA_API_KEY` and run `pnpm visual:review`.
 
+## Content policy
+
 The About page intentionally shows restrained "pending verification" states:
 no biography, credentials, portrait, or official links are published until the
 owner supplies verified material. `pnpm db:seed-dev` inserts only clearly
