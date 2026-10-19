@@ -56,7 +56,23 @@ endorsed without documented owner authorization.
 | `e5be9fa` | 2026-10-19 | Screenshot refresh only. |
 | `a35e4d3` | 2026-10-19 | Visual-QA workflow v1: NVIDIA client, capture pipeline, schema-validated reviews, dry-run executed with 27 captures, 29 deterministic tests. |
 | `c4d5144` | 2026-10-19 | README header fix. |
-| (working tree, 2026-10-19) | — | Workflow v2: versioned review schema, configurable knobs, adversarial-review fixes, product-boundary guard test, docs/ — see the current commit. |
+| `77fa574` | 2026-10-19 | Vision workflow v2: versioned schema, configurable knobs, adversarial-review fixes, product-boundary guard test, docs/ — plus the live-review/GitHub-release session that curated `docs/screenshots/`, rewrote the README, and published this implementation as a branch of the existing GitHub repository. |
+
+## Relationship to the published GitHub repository
+
+The GitHub account accessible from this environment publishes
+**`Maverick-Limitless/2See-Podcast-Website`** (created 2026-10-17), whose
+`main` branch contains a parallel, complete implementation of the same
+2See concept — SvelteKit 2 + node:sqlite + npm, bilingual (Persian/English)
+presentation, PWA, YouTube sync, and its own verified test report. Its commit
+messages show independent vision-review cycles ("Vision-led redesign…",
+"Cycle-3 refinements from the final independent vision review"), meaning a
+parallel effort — on a workspace that does **not exist on this machine** —
+already went through a similar review process and was published on
+2026-10-19T13:44Z. The two histories share no commits. This workspace's
+implementation is published to that repository as a clearly-named branch,
+leaving the published `main` and its history untouched; which
+implementation becomes canonical is an open owner decision.
 
 ## Current status (what is proven vs. what is not)
 

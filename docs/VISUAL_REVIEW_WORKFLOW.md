@@ -95,6 +95,17 @@ scripts/visual-review/
   (timeouts); the evidence above is the live hosted endpoint's own
   responses. Whether image input works *under a specific key* can only be
   proven by an authenticated request, which has not occurred.
+- **Credential search record (2026-10-19, live-review mandate):** the
+  execution environment was searched for an existing key without exposing
+  any value — shell environment (`NVIDIA_API_KEY` absent), this project's
+  documented loader (`.env`: no matching line; `.env.local`: absent),
+  macOS keychain (no `nvapi` generic-password entries), and any sibling
+  workspace on disk (none found; the parallel 2See implementation that
+  performed its own vision-review cycles is published on GitHub but has no
+  workspace on this machine). **Result: no credential is reachable from
+  this environment; the authenticated live review remains blocked** at the
+  exact step of `NVIDIA_API_KEY`. Minimum action: place a valid key in the
+  environment (`.env` or shell) and run `pnpm visual:review`.
 
 ## Review contract (schema v2)
 
