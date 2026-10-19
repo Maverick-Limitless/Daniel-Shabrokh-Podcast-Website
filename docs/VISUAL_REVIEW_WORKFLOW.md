@@ -105,14 +105,22 @@ scripts/visual-review/
   workspace on this machine). **Result of that search:** no directly
   usable `NVIDIA_API_KEY` was reachable, so the script's own live mode
   remained blocked at the key step.
-- **Configured ZCode integration (2026-10-19, later the same day):** the
-  host's model catalog was inspected (ListModels) and now contains a
-  configured NVIDIA provider with
+- **Configured ZCode integration — tested 2026-10-19:** the host's model
+  catalog (ListModels) contains a configured NVIDIA provider with
   **`nvidia/nemotron-3.5-super-vl-120b-a12b` enabled** — the exact review
-  model. This enables genuine live visual review through a ZCode vision
-  subagent that reads the captured screenshots directly, independently of
-  the `NVIDIA_API_KEY` script path. Both routes are documented; either
-  constitutes a live review when actually executed.
+  model. Two real review attempts were executed through this route as
+  ZCode vision subagents that read the captured screenshots. **Result: the
+  requests ran, but the harness omitted the image media from the provider
+  request ("the selected model does not support image input" in this
+  configuration), so no pixel data reached the model. Both subagents
+  correctly refused to invent findings.** The ZCode subagent route
+  therefore does **not** currently deliver a live visual review; enabling
+  image input for this provider/model in the host configuration is the
+  minimum fix. Until then, the `NVIDIA_API_KEY` route (`pnpm
+  visual:review`, direct chat/completions with `image_url` content)
+  remains the only possible live path and is itself blocked without a
+  key. No live visual review has occurred by any route; nothing in this
+  repository claims otherwise.
 
 ## Review contract (schema v2)
 
