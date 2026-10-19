@@ -13,13 +13,23 @@
 	let { video }: { video: VideoCardData } = $props();
 
 	let thumbFailed = $state(false);
+	let img: HTMLImageElement | undefined = $state();
 	const thumb = $derived(video.thumbnailUrl || `https://i.ytimg.com/vi/${video.providerVideoId}/hqdefault.jpg`);
+
+	// Imperative listener: SSR must not emit an inline onerror attribute.
+	$effect(() => {
+		const el = img;
+		if (!el) return;
+		const onImgError = () => (thumbFailed = true);
+		el.addEventListener('error', onImgError);
+		return () => el.removeEventListener('error', onImgError);
+	});
 </script>
 
 <a class="video-card surface-card" href="/watch/{video.slug}">
 	<span class="thumb">
 		{#if !thumbFailed}
-			<img src={thumb} alt="" loading="lazy" width="480" height="270" onerror={() => (thumbFailed = true)} />
+			<img bind:this={img} src={thumb} alt="" loading="lazy" width="480" height="270" />
 		{:else}
 			<span class="thumb-fallback"><span>{video.title}</span></span>
 		{/if}

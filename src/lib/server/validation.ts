@@ -56,30 +56,41 @@ const rootRelativePathSchema = z
 /** Audio source: an approved https URL or a root-relative path (dev fixture). */
 export const mediaSourceSchema = z.union([httpsUrlSchema, rootRelativePathSchema]);
 
-/** Optional https URL or empty string (checkbox-like optional fields send ''). */
-export const optionalHttpsUrl = z
-	.string()
-	.trim()
-	.max(2048)
-	.refine((v) => {
-		if (v === '') return true;
-		try {
-			return new URL(v).protocol === 'https:';
-		} catch {
-			return false;
-		}
-	}, 'Must be a valid https:// URL or empty');
-
-const optionalText = (max: number) =>
+/**
+ * Optional https URL or empty string. Also tolerates a missing key: unchecked
+ * or empty form fields are simply absent from FormData.
+ */
+export const optionalHttpsUrl = z.preprocess(
+	(v) => (v === undefined || v === null ? '' : v),
 	z
 		.string()
 		.trim()
-		.max(max)
-		.transform((v) => (v === '' ? undefined : v));
+		.max(2048)
+		.refine((v) => {
+			if (v === '') return true;
+			try {
+				return new URL(v).protocol === 'https:';
+			} catch {
+				return false;
+			}
+		}, 'Must be a valid https:// URL or empty')
+);
 
-/** Comma-separated tag input → bounded string array. */
-export const tagsField = z
-	.string()
+const optionalText = (max: number) =>
+	z.preprocess(
+		(v) => (v === undefined || v === null ? '' : v),
+		z
+			.string()
+			.trim()
+			.max(max)
+			.transform((v) => (v === '' ? undefined : v))
+	);
+
+/** Comma-separated tag input → bounded string array; tolerates a missing key. */
+export const tagsField = z.preprocess(
+	(v) => (v === undefined || v === null ? '' : v),
+	z
+		.string()
 		.max(400)
 		.transform((s) =>
 			s
@@ -88,7 +99,8 @@ export const tagsField = z
 				.filter(Boolean)
 				.slice(0, 8)
 				.map((t) => t.slice(0, 40))
-		);
+		)
+);
 
 const optionalInt = (min: number, max: number, label: string) =>
 	z.preprocess(

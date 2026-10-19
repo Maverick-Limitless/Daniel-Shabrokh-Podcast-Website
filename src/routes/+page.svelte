@@ -34,7 +34,7 @@
 	<div class="container hero-inner">
 		<div class="hero-copy">
 			<p class="eyebrow rise">An independent media platform</p>
-			<h1 class="hero-title rise">The work of <em>Daniel&nbsp;Shabrokh</em></h1>
+			<h1 class="hero-title rise">The work of <em>Daniel Shabrokh</em></h1>
 			<p class="lede rise">
 				Video, audio, and written insights — one coherent destination, published with editorial
 				care.
@@ -168,6 +168,12 @@
 
 	.hero-copy .lede {
 		margin-top: var(--space-m);
+	}
+
+	/* Grid items must be able to shrink below their min-content width so
+	   long words wrap instead of overflowing the container at 320px. */
+	.hero-copy {
+		min-width: 0;
 	}
 
 	.hero-cta {

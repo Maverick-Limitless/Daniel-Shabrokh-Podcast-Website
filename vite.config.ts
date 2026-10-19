@@ -31,6 +31,9 @@ export default defineConfig(({ mode }) => ({
 					'default-src': ['self'],
 					'script-src': ['self'],
 					'style-src': mode === 'development' ? ['self', 'unsafe-inline'] : ['self'],
+					// Inline style ATTRIBUTES only (framework runtime + testing
+					// tooling); injected <style> elements stay blocked.
+					'style-src-attr': ['unsafe-inline'],
 					'img-src': ['self', 'data:', 'https:'],
 					'media-src': ['self', 'https:'],
 					'font-src': ['self'],

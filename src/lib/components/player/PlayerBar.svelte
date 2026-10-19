@@ -71,6 +71,28 @@
 	>
 		<p class="visually-hidden" aria-live="polite">{statusText}</p>
 
+		<audio
+			bind:this={audio}
+			preload="metadata"
+			onplay={() => {
+				player.status = 'playing';
+				player.error = null;
+			}}
+			onpause={() => {
+				if (player.status !== 'loading') player.status = 'paused';
+			}}
+			onended={() => player.close()}
+			ontimeupdate={(e) => {
+				player.position = e.currentTarget.currentTime;
+			}}
+			onloadedmetadata={(e) => {
+				player.duration = e.currentTarget.duration || 0;
+			}}
+			onwaiting={() => (player.buffering = true)}
+			onplaying={() => (player.buffering = false)}
+			onerror={() => player.markError('This audio source could not be loaded.')}
+		></audio>
+
 		<div class="pb-main">
 			{#if player.episode.coverImage}
 				<img class="pb-cover" src={player.episode.coverImage} alt="" />

@@ -13,6 +13,17 @@
 	// when the visitor actually plays (PRD §12 — don't load every embed).
 	let activated = $state(false);
 	let thumbFailed = $state(false);
+	let img: HTMLImageElement | undefined = $state();
+
+	// Attached imperatively: an onerror attribute would be serialized into the
+	// SSR markup as an inline handler, which the strict CSP blocks.
+	$effect(() => {
+		const el = img;
+		if (!el) return;
+		const onImgError = () => (thumbFailed = true);
+		el.addEventListener('error', onImgError);
+		return () => el.removeEventListener('error', onImgError);
+	});
 
 	const thumb = $derived(thumbnailUrl || `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`);
 </script>
@@ -29,12 +40,12 @@
 		<button class="facade" type="button" onclick={() => (activated = true)} aria-label="Play video: {title}">
 			{#if !thumbFailed}
 				<img
+					bind:this={img}
 					src={thumb}
 					alt=""
 					loading="lazy"
 					width="480"
 					height="270"
-					onerror={() => (thumbFailed = true)}
 				/>
 			{:else}
 				<div class="thumb-fallback"><span>Video preview unavailable — {title}</span></div>

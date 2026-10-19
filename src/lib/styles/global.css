@@ -451,6 +451,12 @@ a {
 	border: 0;
 }
 
+/* SvelteKit body wrapper (class instead of an inline style so the strict
+   CSP style-src stays closed to inline attributes). */
+.sk-body {
+	display: contents;
+}
+
 /* ---------- shared section + card language (PRD §8.4) ---------- */
 .section-head {
 	display: flex;
@@ -528,10 +534,10 @@ a {
 .grid-3 {
 	display: grid;
 	gap: var(--space-l);
-	grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+	grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
 }
 .grid-2 {
 	display: grid;
 	gap: var(--space-l);
-	grid-template-columns: repeat(auto-fill, minmax(21rem, 1fr));
+	grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr));
 }

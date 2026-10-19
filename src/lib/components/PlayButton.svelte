@@ -7,12 +7,7 @@
 	const isPlaying = $derived(isCurrent && (player.status === 'playing' || player.status === 'loading'));
 </script>
 
-<button
-	class="btn btn-primary play-cta"
-	type="button"
-	onclick={() => player.load(episode)}
-	aria-label={isPlaying ? `Pause ${episode.title}` : `Play ${episode.title}`}
->
+<button class="btn btn-primary play-cta" type="button" onclick={() => player.load(episode)}>
 	{#if isPlaying}
 		<svg viewBox="0 0 20 20" width="14" height="14" fill="currentColor" aria-hidden="true">
 			<rect x="4" y="3" width="4" height="14" rx="1" />
