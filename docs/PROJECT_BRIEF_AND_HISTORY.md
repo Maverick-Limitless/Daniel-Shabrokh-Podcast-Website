@@ -56,25 +56,27 @@ endorsed without documented owner authorization.
 | `e5be9fa` | 2026-10-19 | Screenshot refresh only. |
 | `a35e4d3` | 2026-10-19 | Visual-QA workflow v1: NVIDIA client, capture pipeline, schema-validated reviews, dry-run executed with 27 captures, 29 deterministic tests. |
 | `c4d5144` | 2026-10-19 | README header fix. |
-| `77fa574` | 2026-10-19 | Vision workflow v2: versioned schema, configurable knobs, adversarial-review fixes, product-boundary guard test, docs/ — plus the live-review/GitHub-release session that curated `docs/screenshots/`, rewrote the README, and published this implementation as a branch of the existing GitHub repository. |
+| `77fa574` | 2026-10-19 | Vision workflow v2: versioned schema, configurable knobs, adversarial-review fixes, product-boundary guard test, docs/ — plus the live-review/GitHub-release session that curated `docs/screenshots/` and rewrote the README. |
+| `2affe56` | 2026-10-19 | Release presentation commit (enterprise README, docs). Briefly published under a mis-targeted branch in the unrelated Tosi/2See repository due to a defective instruction. |
+| (recovery) | 2026-10-19 | Repository misrouting corrected: dedicated `DSH-Podcast-Website` repository established, full history published there, misplaced branch removed from the Tosi repository, Tosi main verified unchanged. |
 
-## Relationship to the published GitHub repository
+## Repository identity and recovery
 
-The GitHub account accessible from this environment publishes
-**`Maverick-Limitless/2See-Podcast-Website`** (created 2026-10-17), whose
-`main` branch contains a parallel, complete implementation of the same
-2See concept — SvelteKit 2 + node:sqlite + npm, bilingual (Persian/English)
-presentation, PWA, YouTube sync, and its own verified test report. Its commit
-messages show independent vision-review cycles ("Vision-led redesign…",
-"Cycle-3 refinements from the final independent vision review"), meaning a
-parallel effort — on a workspace that does **not exist on this machine** —
-already went through a similar review process and was published on
-2026-10-19T13:44Z. The two histories share no commits. This workspace's
-implementation is published to that repository as the
-**`dsmp-editorial-release`** branch, leaving the published `main` and its
-history untouched. A cross-history pull request is not possible (GitHub:
-"no history in common with main"); compare the branches directly. Which
-implementation becomes canonical is an open owner decision.
+DSH lives in its own dedicated repository:
+**https://github.com/Maverick-Limitless/DSH-Podcast-Website** (created
+2026-10-19). An unrelated project also exists under the same GitHub
+account — **Tosi/2See** (`Maverick-Limitless/2See-Podcast-Website`, a
+SvelteKit 2 + node:sqlite + npm application with bilingual/PWA features
+and its own history). The account's earlier repo list caused an
+implementation of DSH work to be published for a few hours as the
+`dsmp-editorial-release` branch inside the Tosi repository, due to a
+defective instruction. Recovery (2026-10-19): the full local DSH history —
+which contains every commit of the misplaced branch, verified by SHA —
+was published to the dedicated DSH repository, the misplaced branch was
+deleted from the Tosi repository after verification, and Tosi/2See `main`
+(`a959821`) was confirmed unchanged. The projects share no commits, code,
+or lineage; podcast-context mentions of "2See" in DSH content are content
+references, not project-identity references.
 
 ## Current status (what is proven vs. what is not)
 

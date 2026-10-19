@@ -5,22 +5,22 @@ commands executed in this workspace on this date; `git log`; live endpoint
 probes timestamped in [VISUAL_REVIEW_WORKFLOW.md](VISUAL_REVIEW_WORKFLOW.md);
 GitHub API inspection of the published repository.
 
-## Relationship to the published GitHub repository
+## Repository identity
 
-The correct existing repository was identified:
-**`Maverick-Limitless/2See-Podcast-Website`** (public, created 2026-10-17).
-Its `main` branch carries a **parallel, complete implementation** of the same
-concept (SvelteKit 2 + node:sqlite + npm, bilingual/PWA features, its own
-verified test report and vision-review cycles — see its README/TEST-REPORT).
-The two histories are unrelated; nothing in either can be overwritten
-non-destructively from the other. This workspace's verified release is
-therefore published as the **`dsmp-editorial-release` branch** of that
-repository (verified remotely; local `main` tracks it), leaving the
-published `main` untouched. A pull request from the branch was attempted
-and is **blocked by GitHub's own rule** — "The dsmp-editorial-release
-branch has no history in common with main" — so the two implementations
-are compared directly via their branches on GitHub. The choice of which
-implementation becomes canonical is an owner decision.
+This project (DSH — Daniel Shabrokh Podcast) lives in its own dedicated
+repository: **https://github.com/Maverick-Limitless/DSH-Podcast-Website**
+(public, created 2026-10-19, confirmed via the GitHub API).
+
+**Recovery note.** An earlier defective instruction caused one branch of
+DSH work (`dsmp-editorial-release` @ `2affe56`) to be published briefly
+inside `Maverick-Limitless/2See-Podcast-Website` — the repository of the
+unrelated **Tosi/2See** software project. That was a repository-targeting
+mistake, not a project relationship: the two projects share no commits,
+code, or lineage. The complete DSH history (12 commits, clean tree) was
+always intact locally and has been published to the dedicated DSH
+repository with full ancestry; the misplaced branch was then removed from
+the Tosi repository after verification, and Tosi/2See `main` (`a959821`)
+was never modified.
 
 ## Evidence categories (never conflated)
 
@@ -48,10 +48,7 @@ implementation becomes canonical is an owner decision.
    approves each item; content is entered through the CMS.
 3. **Deployment destination** — *missing:* a designated host/domain
    (GitHub publication is done; website hosting was out of mandate scope).
-4. **Canonical-implementation decision** — *missing:* the owner's choice
-   between this workspace's implementation and the parallel implementation
-   currently published on the repository's `main`.
-5. **Field performance data** — *missing:* real-user Core Web Vitals.
+4. **Field performance data** — *missing:* real-user Core Web Vitals.
    Lab numbers (LCP 148–2124ms, CLS ≤ 0.004, interactions ≤ 136ms) exist
    only.
 

@@ -102,10 +102,17 @@ scripts/visual-review/
   macOS keychain (no `nvapi` generic-password entries), and any sibling
   workspace on disk (none found; the parallel 2See implementation that
   performed its own vision-review cycles is published on GitHub but has no
-  workspace on this machine). **Result: no credential is reachable from
-  this environment; the authenticated live review remains blocked** at the
-  exact step of `NVIDIA_API_KEY`. Minimum action: place a valid key in the
-  environment (`.env` or shell) and run `pnpm visual:review`.
+  workspace on this machine). **Result of that search:** no directly
+  usable `NVIDIA_API_KEY` was reachable, so the script's own live mode
+  remained blocked at the key step.
+- **Configured ZCode integration (2026-10-19, later the same day):** the
+  host's model catalog was inspected (ListModels) and now contains a
+  configured NVIDIA provider with
+  **`nvidia/nemotron-3.5-super-vl-120b-a12b` enabled** — the exact review
+  model. This enables genuine live visual review through a ZCode vision
+  subagent that reads the captured screenshots directly, independently of
+  the `NVIDIA_API_KEY` script path. Both routes are documented; either
+  constitutes a live review when actually executed.
 
 ## Review contract (schema v2)
 
