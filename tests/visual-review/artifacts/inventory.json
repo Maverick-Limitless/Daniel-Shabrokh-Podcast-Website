@@ -1,0 +1,303 @@
+{
+	"capturedAt": "2026-10-19T08:43:55.864Z",
+	"count": 27,
+	"items": [
+		{
+			"id": "home-desktop",
+			"route": "/",
+			"viewport": "1440x900",
+			"captureType": "fullpage",
+			"bytes": 199889,
+			"sha256": "fe8d68933a9a024487b90c0894647d9169658f78c032c2e0b3e1d3055a75595d",
+			"payloadForReview": "tests/visual-review/captures/home-desktop.png",
+			"reviewBytes": 199889,
+			"file": "tests/visual-review/captures/home-desktop.png"
+		},
+		{
+			"id": "watch-archive-desktop",
+			"route": "/watch",
+			"viewport": "1440x900",
+			"captureType": "fullpage",
+			"bytes": 65025,
+			"sha256": "cf7fd98bd1f3cb79dd111a610807ae603d8fa1eaddcc7847fae13baa1e1ec4ac",
+			"payloadForReview": "tests/visual-review/captures/watch-archive-desktop.png",
+			"reviewBytes": 65025,
+			"file": "tests/visual-review/captures/watch-archive-desktop.png"
+		},
+		{
+			"id": "watch-detail-desktop",
+			"route": "/watch/dev-fixture-video",
+			"viewport": "1440x900",
+			"captureType": "fullpage",
+			"bytes": 87062,
+			"sha256": "f5c43b9253f4b8b3c9cf26439594ba4d99e285ed0951b3afd074805c6ea0ff03",
+			"payloadForReview": "tests/visual-review/captures/watch-detail-desktop.png",
+			"reviewBytes": 87062,
+			"file": "tests/visual-review/captures/watch-detail-desktop.png"
+		},
+		{
+			"id": "listen-archive-desktop",
+			"route": "/listen",
+			"viewport": "1440x900",
+			"captureType": "fullpage",
+			"bytes": 70098,
+			"sha256": "22acda2509bbd626dc24023178eac23c2f42fe756c6cc5d823be82b580546334",
+			"payloadForReview": "tests/visual-review/captures/listen-archive-desktop.png",
+			"reviewBytes": 70098,
+			"file": "tests/visual-review/captures/listen-archive-desktop.png"
+		},
+		{
+			"id": "listen-detail-desktop",
+			"route": "/listen/dev-fixture-episode",
+			"viewport": "1440x900",
+			"captureType": "fullpage",
+			"bytes": 84995,
+			"sha256": "d8d43dc977214a1ad584431719d40cf8effb69a496b54f63e51f3faddd406ca1",
+			"payloadForReview": "tests/visual-review/captures/listen-detail-desktop.png",
+			"reviewBytes": 84995,
+			"file": "tests/visual-review/captures/listen-detail-desktop.png"
+		},
+		{
+			"id": "insights-archive-desktop",
+			"route": "/insights",
+			"viewport": "1440x900",
+			"captureType": "fullpage",
+			"bytes": 74607,
+			"sha256": "3c334508c9d3b469b989709a75de496aa9fce9b04700f227340e2a65577c48d5",
+			"payloadForReview": "tests/visual-review/captures/insights-archive-desktop.png",
+			"reviewBytes": 74607,
+			"file": "tests/visual-review/captures/insights-archive-desktop.png"
+		},
+		{
+			"id": "article-desktop",
+			"route": "/insights/dev-example-insight",
+			"viewport": "1440x900",
+			"captureType": "fullpage",
+			"bytes": 191505,
+			"sha256": "180b7a3ce987287b89af6bfef4938cf1d4f1b4ba88733cc068ea0203c4be190a",
+			"payloadForReview": "tests/visual-review/captures/article-desktop.png",
+			"reviewBytes": 191505,
+			"file": "tests/visual-review/captures/article-desktop.png"
+		},
+		{
+			"id": "search-results-desktop",
+			"route": "/search?q=dev",
+			"viewport": "1440x900",
+			"captureType": "fullpage",
+			"bytes": 125757,
+			"sha256": "cb2370118e41bd9fb6fae740e6df95f2bc49868ac2987913f20927b17905901b",
+			"payloadForReview": "tests/visual-review/captures/search-results-desktop.png",
+			"reviewBytes": 125757,
+			"file": "tests/visual-review/captures/search-results-desktop.png"
+		},
+		{
+			"id": "search-empty-desktop",
+			"route": "/search?q=zzzz",
+			"viewport": "1440x900",
+			"captureType": "fullpage",
+			"bytes": 77712,
+			"sha256": "11655a261640ccfac0f2e458569d8bd21598c7427e316ac47afd2bd6332e5cc6",
+			"payloadForReview": "tests/visual-review/captures/search-empty-desktop.png",
+			"reviewBytes": 77712,
+			"file": "tests/visual-review/captures/search-empty-desktop.png"
+		},
+		{
+			"id": "about-desktop",
+			"route": "/about",
+			"viewport": "1440x900",
+			"captureType": "fullpage",
+			"bytes": 162846,
+			"sha256": "b51e61952724c178e5ae83fc85af75b7dd7b1e5e887ebe018310bd45690e58a2",
+			"payloadForReview": "tests/visual-review/captures/about-desktop.png",
+			"reviewBytes": 162846,
+			"file": "tests/visual-review/captures/about-desktop.png"
+		},
+		{
+			"id": "privacy-desktop",
+			"route": "/privacy",
+			"viewport": "1440x900",
+			"captureType": "fullpage",
+			"bytes": 251207,
+			"sha256": "f0c8ad1c6037866ffbf22351a160ee53b92123e5c798a00b2284b0c836c82965",
+			"payloadForReview": "tests/visual-review/captures/privacy-desktop.png",
+			"reviewBytes": 251207,
+			"file": "tests/visual-review/captures/privacy-desktop.png"
+		},
+		{
+			"id": "error-404-desktop",
+			"route": "/watch/missing-page",
+			"viewport": "1440x900",
+			"captureType": "fullpage",
+			"bytes": 70392,
+			"sha256": "3308f323cd3d518e57ddb14fd4c0abc16a856da02e51d55e39f8da176558f333",
+			"payloadForReview": "tests/visual-review/captures/error-404-desktop.png",
+			"reviewBytes": 70392,
+			"file": "tests/visual-review/captures/error-404-desktop.png"
+		},
+		{
+			"id": "player-interaction-desktop",
+			"route": "/listen",
+			"viewport": "1440x900",
+			"captureType": "viewport",
+			"bytes": 86371,
+			"sha256": "61f31a907087d545bdd3556f75a8a15e9a858a8ec5766fe62198a91c6aaeedc1",
+			"payloadForReview": "tests/visual-review/captures/player-interaction-desktop.png",
+			"reviewBytes": 86371,
+			"file": "tests/visual-review/captures/player-interaction-desktop.png"
+		},
+		{
+			"id": "admin-login-desktop",
+			"route": "/admin/login",
+			"viewport": "1440x900",
+			"captureType": "fullpage",
+			"bytes": 69067,
+			"sha256": "e9ca8c0e074fb05e87c8457e4241f86f7b97e9938cc389de0261169f5e73d631",
+			"payloadForReview": "tests/visual-review/captures/admin-login-desktop.png",
+			"reviewBytes": 69067,
+			"file": "tests/visual-review/captures/admin-login-desktop.png"
+		},
+		{
+			"id": "admin-login-error-desktop",
+			"route": "/admin/login",
+			"viewport": "1440x900",
+			"captureType": "fullpage",
+			"bytes": 74152,
+			"sha256": "87155b2127f205e9edf69d3c93be90160f0dc97db5f276024e12db7710d40ccb",
+			"payloadForReview": "tests/visual-review/captures/admin-login-error-desktop.png",
+			"reviewBytes": 74152,
+			"file": "tests/visual-review/captures/admin-login-error-desktop.png"
+		},
+		{
+			"id": "admin-dashboard-desktop",
+			"route": "/admin",
+			"viewport": "1440x900",
+			"captureType": "fullpage",
+			"bytes": 131742,
+			"sha256": "5e406652d6a2ee8ca1c51131390339ec53fab7dabd689dc92827025502c19daa",
+			"payloadForReview": "tests/visual-review/captures/admin-dashboard-desktop.png",
+			"reviewBytes": 131742,
+			"file": "tests/visual-review/captures/admin-dashboard-desktop.png"
+		},
+		{
+			"id": "admin-content-list-desktop",
+			"route": "/admin/insights",
+			"viewport": "1440x900",
+			"captureType": "fullpage",
+			"bytes": 87177,
+			"sha256": "a898c30d6bb8c0ecbefe7328d4eb4c06adf434cb9996aea6590e9dde84cc270c",
+			"payloadForReview": "tests/visual-review/captures/admin-content-list-desktop.png",
+			"reviewBytes": 87177,
+			"file": "tests/visual-review/captures/admin-content-list-desktop.png"
+		},
+		{
+			"id": "admin-editor-desktop",
+			"route": "/admin/insights/new",
+			"viewport": "1440x900",
+			"captureType": "fullpage",
+			"bytes": 118068,
+			"sha256": "336d952536b2b5604e1bee6be8256f040c74aa184de8cc66d5e18d3dbbcf52d0",
+			"payloadForReview": "tests/visual-review/captures/admin-editor-desktop.png",
+			"reviewBytes": 118068,
+			"file": "tests/visual-review/captures/admin-editor-desktop.png"
+		},
+		{
+			"id": "admin-settings-desktop",
+			"route": "/admin/settings",
+			"viewport": "1440x900",
+			"captureType": "fullpage",
+			"bytes": 126844,
+			"sha256": "30066ea1fa16466bff95b19a217ec78e7942f95090dbaa81ff9e7b0c9881ad4b",
+			"payloadForReview": "tests/visual-review/captures/admin-settings-desktop.png",
+			"reviewBytes": 126844,
+			"file": "tests/visual-review/captures/admin-settings-desktop.png"
+		},
+		{
+			"id": "admin-preview-desktop",
+			"route": "/preview/insights/cmvf0c2rc00001r0fe74pcpef",
+			"viewport": "1440x900",
+			"captureType": "fullpage",
+			"bytes": 196269,
+			"sha256": "08170d1e4b8a1d01355e6cbd1005e5b54586d8fa4b9fea92d85e3e4a260d97fd",
+			"payloadForReview": "tests/visual-review/captures/admin-preview-desktop.png",
+			"reviewBytes": 196269,
+			"file": "tests/visual-review/captures/admin-preview-desktop.png"
+		},
+		{
+			"id": "home-tablet",
+			"route": "/",
+			"viewport": "768x1024",
+			"captureType": "fullpage",
+			"bytes": 179844,
+			"sha256": "a02358f17bbe184c82670aae3e783b4f98e1a36236642b3e1829539190b787c6",
+			"payloadForReview": "tests/visual-review/captures/home-tablet.png",
+			"reviewBytes": 179844,
+			"file": "tests/visual-review/captures/home-tablet.png"
+		},
+		{
+			"id": "home-mobile",
+			"route": "/",
+			"viewport": "390x844",
+			"captureType": "fullpage",
+			"bytes": 160109,
+			"sha256": "aaaf180b0722de72a523ad8336563d7718ed1b32a60098d27fe642a01ff5d159",
+			"payloadForReview": "tests/visual-review/captures/home-mobile.png",
+			"reviewBytes": 160109,
+			"file": "tests/visual-review/captures/home-mobile.png"
+		},
+		{
+			"id": "watch-archive-mobile",
+			"route": "/watch",
+			"viewport": "390x844",
+			"captureType": "fullpage",
+			"bytes": 53400,
+			"sha256": "18c7cf0a1242a5ac1d2a02e9d67f7928424fa302ac9c735192ef7f577feb2102",
+			"payloadForReview": "tests/visual-review/captures/watch-archive-mobile.png",
+			"reviewBytes": 53400,
+			"file": "tests/visual-review/captures/watch-archive-mobile.png"
+		},
+		{
+			"id": "listen-archive-mobile",
+			"route": "/listen",
+			"viewport": "390x844",
+			"captureType": "fullpage",
+			"bytes": 57928,
+			"sha256": "beccb22cb5eed928d3a3c9db788d2bfa82dc6ce337d6fda51b6927c9e2a1d93e",
+			"payloadForReview": "tests/visual-review/captures/listen-archive-mobile.png",
+			"reviewBytes": 57928,
+			"file": "tests/visual-review/captures/listen-archive-mobile.png"
+		},
+		{
+			"id": "article-mobile",
+			"route": "/insights/dev-example-insight",
+			"viewport": "390x844",
+			"captureType": "fullpage",
+			"bytes": 175055,
+			"sha256": "cb49c4b0689002cb2837256a4334b140b9434370f65f9f53681b16150c9bdb16",
+			"payloadForReview": "tests/visual-review/captures/article-mobile.png",
+			"reviewBytes": 175055,
+			"file": "tests/visual-review/captures/article-mobile.png"
+		},
+		{
+			"id": "nav-open-mobile",
+			"route": "/",
+			"viewport": "390x844",
+			"captureType": "viewport",
+			"bytes": 54097,
+			"sha256": "4ea5f2b110f65b487a58e299087104bc3db11873a62b1c2413cf7edc6aa10c7d",
+			"payloadForReview": "tests/visual-review/captures/nav-open-mobile.png",
+			"reviewBytes": 54097,
+			"file": "tests/visual-review/captures/nav-open-mobile.png"
+		},
+		{
+			"id": "home-320",
+			"route": "/",
+			"viewport": "320x568",
+			"captureType": "fullpage",
+			"bytes": 157092,
+			"sha256": "4ef5c964872e86265f0a60275cdfefc48baa6b79b23a8252a1d8b38906f60284",
+			"payloadForReview": "tests/visual-review/captures/home-320.png",
+			"reviewBytes": 157092,
+			"file": "tests/visual-review/captures/home-320.png"
+		}
+	]
+}

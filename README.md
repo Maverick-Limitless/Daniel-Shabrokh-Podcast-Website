@@ -153,7 +153,60 @@ pnpm exec prisma migrate deploy
 pnpm build && (restart the node process)
 ```
 
-## Content policy
+## Visual QA — NVIDIA vision-language review (`pnpm visual:review`)
+
+A repeatable workflow that builds the app, boots the real production server
+on a verified-free port against a disposable `[DEV]` fixture database,
+captures a 27-shot screenshot inventory through a real browser, submits each
+capture to an NVIDIA vision-language model, and saves structured reviews.
+
+**Model decision (documented, per the vision-workflow mandate):** the
+originally requested `nvidia/nemotron-nano-12b-v2-vl` was verified against
+the official hosted API and found **end-of-life** —
+`POST integrate.api.nvidia.com/v1/chat/completions` returns
+`410 "…has reached its end of life on 2026-08-26…"`. The workflow therefore
+defaults to **`nvidia/nemotron-3.5-super-vl-120b-a12b`**, verified live in the
+public catalog and reachable (401 without credentials, not 410). Override
+with `NVIDIA_VISION_MODEL`; the EOL ID is explicitly refused with that
+evidence.
+
+**Setup:** create a key at <https://build.nvidia.com> (account → Setup → Get
+API Key) and set the variables from `.env.example`
+(`NVIDIA_API_KEY`, optionally `NVIDIA_VISION_MODEL`, `NVIDIA_VISION_BASE_URL`,
+`VISUAL_REVIEW_PORT`). The key is read only from the environment, redacted
+from every log and artifact, and never sent to the browser or committed.
+
+**Commands:**
+
+```sh
+pnpm visual:review        # capture + live NVIDIA review (requires the key)
+pnpm visual:review:dry    # capture + build every request, send nothing
+```
+
+**Exit codes:** `0` review completed · `2` missing/invalid configuration ·
+`3` API failure (auth/rate/model/network) · `4` model responses failed schema
+validation · `5` local environment failure (port busy, build, capture).
+
+**Artifacts** (committed as evidence unless noted): screenshot inventory at
+`tests/visual-review/captures/`, structured per-shot reviews in
+`tests/visual-review/artifacts/reviews/`, plus `inventory.json`,
+`dry-run-summary.json`, and `summary.json` (severity counts, scores,
+release blockers). The fixture database (`data/visual-review.db`) is disposable
+and gitignored.
+
+**Troubleshooting:** `401` → invalid/missing key · `403` → key lacks access to
+this model · `429` → rate limited, the client backs off and retries twice ·
+`410/404` → model retired/unknown (check the model ID) · `400` → check image
+size (captures over 4 MB fall back to viewport-only variants) · timeouts and
+5xx are retried; per-model rate limits are not published in the static
+catalog, so requests are spaced and bounded.
+
+**Live status:** the live authenticated review has **not been executed** in
+this environment — no `NVIDIA_API_KEY` is configured. Everything short of the
+authenticated request is exercised: the request/response contract is
+unit-tested with deterministic fixtures (no network), and `visual:review:dry`
+runs the entire capture pipeline for real. Minimum step for a genuine live
+review: export a valid `NVIDIA_API_KEY` and run `pnpm visual:review`.
 
 The About page intentionally shows restrained "pending verification" states:
 no biography, credentials, portrait, or official links are published until the

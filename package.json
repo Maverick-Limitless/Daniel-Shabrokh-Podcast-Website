@@ -18,7 +18,9 @@
 		"db:migrate": "prisma migrate dev",
 		"db:deploy": "prisma migrate deploy",
 		"db:seed-dev": "node prisma/seed-dev.mjs",
-		"admin:create": "node scripts/create-admin.mjs"
+		"admin:create": "node scripts/create-admin.mjs",
+		"visual:review": "node scripts/visual-review/run.mjs",
+		"visual:review:dry": "node scripts/visual-review/run.mjs --dry-run"
 	},
 	"devDependencies": {
 		"@axe-core/playwright": "^4.14.0",
