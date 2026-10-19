@@ -14,9 +14,13 @@ concept (SvelteKit 2 + node:sqlite + npm, bilingual/PWA features, its own
 verified test report and vision-review cycles — see its README/TEST-REPORT).
 The two histories are unrelated; nothing in either can be overwritten
 non-destructively from the other. This workspace's verified release is
-therefore published as a clearly-named branch in that repository (see the
-commit/PR for the exact SHA), leaving the published `main` untouched. The
-choice of which implementation becomes canonical is an owner decision.
+therefore published as the **`dsmp-editorial-release` branch** of that
+repository (verified remotely; local `main` tracks it), leaving the
+published `main` untouched. A pull request from the branch was attempted
+and is **blocked by GitHub's own rule** — "The dsmp-editorial-release
+branch has no history in common with main" — so the two implementations
+are compared directly via their branches on GitHub. The choice of which
+implementation becomes canonical is an owner decision.
 
 ## Evidence categories (never conflated)
 

@@ -70,8 +70,10 @@ messages show independent vision-review cycles ("Vision-led redesign…",
 parallel effort — on a workspace that does **not exist on this machine** —
 already went through a similar review process and was published on
 2026-10-19T13:44Z. The two histories share no commits. This workspace's
-implementation is published to that repository as a clearly-named branch,
-leaving the published `main` and its history untouched; which
+implementation is published to that repository as the
+**`dsmp-editorial-release`** branch, leaving the published `main` and its
+history untouched. A cross-history pull request is not possible (GitHub:
+"no history in common with main"); compare the branches directly. Which
 implementation becomes canonical is an open owner decision.
 
 ## Current status (what is proven vs. what is not)
