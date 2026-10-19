@@ -19,10 +19,13 @@ test('player: playback starts from the listen archive and persists across naviga
 	// Poll: decoding the 1.3MB fixture can take longer than a fixed wait.
 	let position = '0:00';
 	await expect
-		.poll(async () => {
-			position = (await bar.locator('.pb-time').nth(0).textContent()) ?? '0:00';
-			return timeToSeconds(position);
-		})
+		.poll(
+			async () => {
+				position = (await bar.locator('.pb-time').nth(0).textContent()) ?? '0:00';
+				return timeToSeconds(position);
+			},
+			{ timeout: 15_000 }
+		)
 		.toBeGreaterThan(0);
 
 	// Navigation must not reset playback (PRD §4.2 Journey B).

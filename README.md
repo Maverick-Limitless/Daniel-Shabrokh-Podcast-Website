@@ -17,6 +17,11 @@ must be replaced with verified content (see "Content policy" below).
 - Vitest (unit) + Playwright (browser E2E) + axe-core (accessibility)
 - Self-hosted variable fonts (Fraunces, Newsreader, Inter) — no third-party font CDN
 
+Dependency hygiene: `pnpm.overrides` pins `lodash ≥ 4.18` — the only audit
+findings (1 high, 2 moderate) were lodash 4.17.21 reached exclusively through
+Prisma Studio's bundled UI tooling (`@prisma/studio-core → @visx/*`);
+`pnpm audit` now reports zero known vulnerabilities.
+
 ## Requirements
 
 - Node.js ≥ 20 (developed on 26), pnpm ≥ 9, SQLite 3
@@ -83,6 +88,32 @@ pnpm test:e2e   # 33 browser tests: builds for production, boots the real server
 E2E credentials are generated per run (or supplied via `TEST_ADMIN_TEMP_PASSWORD` /
 `TEST_ADMIN_FINAL_PASSWORD`); nothing is committed. The suite runs against an
 isolated database (`data/e2e.db`) with `[DEV]` fixtures — never your real data.
+
+## Health check
+
+`GET /healthz` returns `200 {"ok":true}` after answering a real database query,
+or `503 {"ok":false}` when the database is unreachable — suitable for uptime
+monitors, load balancers, and post-deploy smoke checks.
+
+## Performance (laboratory measurements)
+
+`node scripts/measure-web-vitals.mjs` (after building with
+`KIT_ORIGIN=http://localhost:43933 pnpm build`) loads the five key pages in a
+real Chromium window, three runs per page, and reports Core Web Vitals. Lab
+record from the release verification run (localhost production build — this is
+**not** field data from real users):
+
+| Metric | Target | Measured (lab) |
+| --- | --- | --- |
+| LCP | ≤ 2.5s | 148–2124ms across pages; one 3008ms outlier on the article page; every delivered median within target |
+| CLS | ≤ 0.1 | 0.000–0.004 on every run of every page |
+| Interaction latency (INP-style lab proxy) | ≤ 200ms | 16–136ms |
+| INP (field) | ≤ 200ms | **Not measured** — requires real-user data |
+
+Caveat: headless Chromium on this host inconsistently suppresses
+`largest-contentful-paint` entry delivery (the script therefore runs headed and
+reports the delivered-run count). Fonts are self-hosted; the only
+latency-relevant third party is the YouTube thumbnail on the home/watch facades.
 
 ## Production build & run
 
