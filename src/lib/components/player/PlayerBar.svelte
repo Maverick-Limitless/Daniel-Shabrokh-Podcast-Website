@@ -5,7 +5,7 @@
 	let audio = $state<HTMLAudioElement | null>(null);
 	let loadedSrc: string | null = $state(null);
 
-	// Drive the single <audio> element from store intent (PRD §5.3).
+	// Drive the single <audio> element from store intent.
 	$effect(() => {
 		const episode = player.episode;
 		const status = player.status;

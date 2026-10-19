@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { login } from './helpers';
 
-// PRD §14.4: CMS lifecycle — create draft, preview, publish, public
+// CMS lifecycle — create draft, preview, publish, public
 // visibility, unpublish, deletion; validation and duplicate-slug rejection.
 
 test.beforeEach(async ({ page }) => {
@@ -49,7 +49,7 @@ test('article lifecycle: draft → preview → publish → public → unpublish 
 	const afterUnpublish = await page.request.get('/insights/lifecycle-test-article');
 	expect(afterUnpublish.status()).toBe(404);
 
-	// Delete requires the confirmation step (PRD §6.7).
+	// Delete requires the confirmation step.
 	await page.getByText('Delete article…').click();
 	await page.getByRole('button', { name: 'Confirm delete' }).click();
 	await expect(page).toHaveURL(/\/admin\/insights$/);

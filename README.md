@@ -1,11 +1,11 @@
-# DSMP — Daniel Shabrokh / 2See Podcast Media Platform
+# DSH — Daniel Shabrokh Podcast Website
 
-An independent, editorial-quality website proposal for the **2See / Daniel
-Shabrokh podcast**: one coherent destination for video, audio, and written
-insights, backed by a private single-administrator publishing panel.
+An independent, editorial-quality website concept for the **Daniel Shabrokh
+podcast**: one coherent destination for video, audio, and written insights,
+backed by a private single-administrator publishing panel.
 
 > **Status — read this first.** This is an **independent proposal**. It is not
-> an official 2See website and has no affiliation with, endorsement from, or
+> an official website and has no affiliation with, endorsement from, or
 > authorization by Daniel Shabrokh. All content in the screenshots and seed
 > data below is clearly labeled `[DEV]` placeholder material awaiting
 > owner-verified replacement. The site has **not been deployed publicly**.
@@ -31,12 +31,9 @@ touching code: drafts, preview, publish, unpublish, archive, delete.
 ## Visual tour
 
 Every image below is a **real capture of the running production build**
-(1440×900 desktop, 390×844 mobile) with `[DEV]` fixture content. The full
-28-shot evidence inventory — every route, mobile/tablet/320px widths, admin
-panel, error/empty/focus states — lives in
-[`tests/visual-review/captures/`](tests/visual-review/captures/) with
-hashes and metadata in
-[`tests/visual-review/artifacts/inventory.json`](tests/visual-review/artifacts/inventory.json).
+(1440×900 desktop, 390×844 mobile) with `[DEV]` fixture content. The E2E
+suite regenerates a 20-shot evidence set on every run in
+[`tests/screenshots/`](tests/screenshots/).
 
 | | |
 | --- | --- |
@@ -69,8 +66,8 @@ More states — [404](docs/screenshots/states/error-404.png),
   article pages (sanitized Markdown, table of contents, reading time); About
   with honest "pending verification" states (no invented biography); Search
   across published content only; Privacy; deliberate 404/error/empty
-  states; sitemap/robots generated from published content; canonical + Open
-  Graph metadata.
+  states; sitemap/robots generated from published content; canonical +
+  Open Graph metadata.
 - **Publishing panel** (`/admin`): dashboard with real counts; per-type
   lists with search/filter; create/edit/save-draft/preview/publish/
   unpublish/archive/restore/delete (no-JS confirmation for destructive
@@ -85,36 +82,21 @@ More states — [404](docs/screenshots/states/error-404.png),
 **Planned / owner-gated (explicitly not built)**
 
 Public registration, multi-role permissions, comments/social, payments,
-custom video hosting, analytics, email flows — all out of scope by mandate.
-Real biography, official links, episode data, and an `og:image` require
-owner verification first.
+custom video hosting, analytics, email flows — all deliberately out of
+scope. Real biography, official links, episode data, and an `og:image`
+require owner verification first.
 
 ## Architecture
 
-The product runtime and the development-time visual reviewer are strictly
-separated — enforced by a guard test
-([`tests/unit/product-boundary.test.ts`](tests/unit/product-boundary.test.ts))
-that fails the suite if any NVIDIA reference, dependency, or workflow import
-ever appears in the product.
-
 ```mermaid
 flowchart LR
-  subgraph Product["Product runtime (src/) — deployed"]
-    B[Browser] -->|HTTP| N[Node adapter\nSvelteKit SSR]
-    N --> A["Admin routes\n(auth-gated CMS)"]
-    N --> P["Public routes\n(home, watch, listen, insights…)"]
-    A --> D[(SQLite via Prisma)]
-    P --> D
-  end
-  subgraph Dev["Development-only (scripts/visual-review/) — never deployed"]
-    C[Playwright captures] -->|"PNG + minimal context"| R[NVIDIA vision model]
-    R -->|"JSON findings (schema-validated)"| T[GLM triage → fixes]
-    T -->|rebuild + recapture| C
-  end
-  T -.->|code changes only| P
+  B[Browser] -->|HTTP| N[Node adapter — SvelteKit SSR]
+  N --> P["Public routes\n(home, watch, listen, insights…)"]
+  N --> A["Admin routes\n(auth-gated CMS)"]
+  P --> D[(SQLite via Prisma)]
+  A --> D
+  N -.->|click-to-load only| Y[YouTube embeds\nyoutube-nocookie]
 ```
-
-**Directory map**
 
 ```
 prisma/schema.prisma        data model (Administrator, Session, Article, Video, AudioEpisode, AdminEvent)
@@ -122,22 +104,22 @@ src/routes/                 public pages, /admin (CMS), /preview (draft preview)
 src/lib/server/             auth, guard, CMS services, content queries, validation, Markdown sanitizer, audit
 src/lib/components/         header, footer, cards, YouTube facade, shared audio player
 src/lib/styles/             design tokens (WCAG-contrast-verified) + global styles
-scripts/                    admin init, [DEV] seeding, E2E prep, audio fixture,
-                            web-vitals measurement, visual-review/ (NVIDIA QA workflow)
-tests/                      unit (vitest), e2e (Playwright), screenshots, visual-review evidence
-docs/                       brief & history, visual-review workflow, release status, screenshots
+scripts/                    admin init, [DEV] seeding, E2E preparation, audio fixture,
+                            web-vitals measurement
+tests/                      unit (vitest), e2e (Playwright), screenshot evidence
+docs/                       brief & history, release status, screenshots
 ```
 
 ## Technology stack
 
 [SvelteKit 3](https://svelte.dev/docs/kit) + Svelte 5 (runes) + TypeScript ·
 [Prisma 7](https://www.prisma.io) + SQLite (better-sqlite3) for
-single-instance deployments · [@node-rs/argon2](https://github.com/napi-rs/node-rs/tree/main/crates/argon2)
+single-instance deployments ·
+[@node-rs/argon2](https://github.com/napi-rs/node-rs/tree/main/crates/argon2)
 · Vitest + Playwright + axe-core · self-hosted variable fonts (Fraunces,
-Newsreader, Inter). Zero NVIDIA dependencies anywhere (the review workflow
-uses only the runtime `fetch`). `pnpm.overrides` pins `lodash ≥ 4.18` —
-the only audit findings ever found lived in Prisma Studio's bundled UI
-tooling; `pnpm audit` is clean.
+Newsreader, Inter). `pnpm.overrides` pins `lodash ≥ 4.18` (the only audit
+findings ever found lived in Prisma Studio's bundled UI tooling); `pnpm
+audit` reports zero known vulnerabilities.
 
 ## Getting started
 
@@ -167,50 +149,28 @@ All variables have safe placeholders in [`.env.example`](.env.example):
 | `DATABASE_URL` | SQLite URL — **absolute path** (`file:/srv/dsh/app.db`): the Prisma CLI and the runtime resolve relative paths differently. |
 | `SITE_BASE_URL` | Canonical origin for canonical/OG/robots/sitemap; empty falls back to the request origin. |
 | `KIT_ORIGIN` | Build-time origin for direct-to-Node production builds; leave unset behind a proxy (which should send `PROTOCOL_HEADER`/`HOST_HEADER`). |
-| `NVIDIA_*`, `VISUAL_REVIEW_*` | Development-only visual-review workflow — never used by the website runtime. |
 
 No session secret exists (tokens are random and stored hashed). Missing
 required configuration fails at startup with a clear error. Never commit
-`.env`; keys are read only from the environment and redacted from all logs
-and artifacts.
+`.env`.
 
 ## Testing and quality assurance
 
 | Command | Result (2026-10-19) |
 | --- | --- |
 | `pnpm check` | 0 errors, 0 warnings (svelte-check) |
-| `pnpm test` | **81/81 passed** — validation, Markdown sanitization, WCAG contrast of every token pair, the NVIDIA workflow contract (request building, parsing, error classification, retries, redaction), and the product-boundary guard |
+| `pnpm test` | **34/34 passed** — validation, Markdown sanitization, WCAG contrast of every design-token pair |
 | `pnpm test:e2e` | **38/38 passed** — fresh production build, real server: auth lifecycle, CMS draft→publish→unpublish→delete, draft privacy, search, audio playback + keyboard controls + cross-navigation persistence, YouTube click-to-load, XSS end-to-end probe, responsive matrix 320–1440px, axe-core (0 serious/critical), layout integrity |
-| `pnpm audit` | No known vulnerabilities |
-| `pnpm visual:review:dry` | Full capture pipeline executed for real (28 screenshots); requests built, none sent |
 
 E2E credentials are generated per run; the suite uses an isolated database
 and never touches real data. `GET /healthz` answers a real database query —
 use it for post-deploy smoke checks.
 
-## Visual-review workflow (development-only)
-
-`pnpm visual:review` builds the app, boots the real production server on a
-verified-free port against a disposable `[DEV]` database, captures 28 real
-browser screenshots, submits each to the configured NVIDIA vision-language
-model, schema-validates every response, and writes severity-ranked
-artifacts. `pnpm visual:review:dry` does everything except send.
-
-**Model status (live-endpoint-verified 2026-10-19):** the originally
-requested `nvidia/nemotron-nano-12b-v2-vl` is end-of-life (HTTP 410,
-retired 2026-08-26) and refused by the workflow; the default is
-**`nvidia/nemotron-3.5-super-vl-120b-a12b`** (live in the catalog, 401-gated).
-**The authenticated live review has not been executed** — no valid
-`NVIDIA_API_KEY` was available in this environment (shell, `.env`, and
-keychain checked). Dry-run proves the pipeline; it is not evidence of a
-model review. Full details, configuration, exit codes, and troubleshooting:
-[docs/VISUAL_REVIEW_WORKFLOW.md](docs/VISUAL_REVIEW_WORKFLOW.md).
-
 ## Build and production verification
 
 ```sh
 KIT_ORIGIN=https://your.domain pnpm build   # or omit behind a proxy
-pnpm exec prisma migrate deploy
+pnpm exec prisma migrate deploy             # apply migrations first
 DATABASE_URL=file:/srv/dsh/app.db NODE_ENV=production PORT=3000 node build/index.js
 ```
 
@@ -229,37 +189,35 @@ tone, and the seeder refuses to run in production. Video is embedded only
 via YouTube's official privacy-enhanced player; nothing is scraped or
 re-hosted. Real biography, official links, episode data, images, and
 publication rights all require owner verification before any publish —
-tracked in [docs/PROJECT_BRIEF_AND_HISTORY.md](docs/PROJECT_BRIEF_AND_HISTORY.md).
+see [docs/PROJECT_BRIEF_AND_HISTORY.md](docs/PROJECT_BRIEF_AND_HISTORY.md).
 
 ## Accessibility, security, and privacy
 
 - **Accessibility (tested, not declared):** axe-core scans across 14 pages
-  with zero serious/critical violations; WCAG contrast of every design-token
-  pair verified by unit test; keyboard journeys (skip link, player controls,
-  admin forms) exercised in E2E; visible focus states; reduced-motion
-  support; 320–1440px overflow matrix clean.
-- **Security:** listed under Features; see `docs/` for the full model
-  (hashed sessions, rate limiting, CSP, CSRF, sanitization). Residual risks
-  are documented honestly — single-instance SQLite, HSTS delegated to the
-  proxy, ASCII-only search case-folding.
+  with zero serious/critical violations; WCAG contrast of every
+  design-token pair verified by unit test; keyboard journeys (skip link,
+  player controls, admin forms) exercised in E2E; visible focus states;
+  reduced-motion support; 320–1440px overflow matrix clean.
+- **Security:** listed under Features; residual risks documented honestly —
+  single-instance SQLite, HSTS delegated to the proxy, ASCII-only search
+  case-folding.
 - **Privacy:** no analytics, no third-party tracking, no third-party JS
   before a video is played; the privacy page describes actual behavior.
 
 ## Known limitations and release status
 
-Independent visual review (live NVIDIA or human) is still pending;
-screenshots are archived for that purpose. Remaining release gates:
-owner content + publication authorization, a deployment destination, and
-field performance data. Nothing about this repository implies owner
-permission or production readiness. Details:
+An independent visual review of the archived screenshots is still pending.
+Remaining release gates: owner content + publication authorization, a
+deployment destination, and field performance data. Nothing in this
+repository implies owner permission or production readiness. Details:
 [docs/RELEASE_STATUS.md](docs/RELEASE_STATUS.md).
 
 ## Roadmap (owner-gated, not shipped)
 
-1. Owner-verified content and authorization → replace all `[DEV]`
-   fixtures via the CMS.
-2. Live NVIDIA visual review pass (needs `NVIDIA_API_KEY`) → triage →
-   fix → re-review (≤ 3 rounds).
+1. Owner-verified content and authorization → replace all `[DEV]` fixtures
+   via the CMS.
+2. Independent visual review pass over the archived screenshots →
+   triage → fixes.
 3. Production deployment once the owner designates a host/domain.
 4. Field Core Web Vitals collection.
 
@@ -267,9 +225,7 @@ permission or production readiness. Details:
 
 Update dependencies with `pnpm install` after pulling; apply migrations
 with `pnpm exec prisma migrate deploy`; add content only through the CMS.
-Keep the boundary: visual-review code stays in `scripts/`/`tests/`, never
-in `src/` (the guard test enforces this). Regenerate screenshots with
-`pnpm test:e2e` (E2E set) or `pnpm visual:review:dry` (review set).
+Regenerate the screenshot evidence set with `pnpm test:e2e`.
 
 ## License and contact
 

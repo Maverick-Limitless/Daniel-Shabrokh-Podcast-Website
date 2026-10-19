@@ -20,7 +20,7 @@ export const actions: Actions = {
 		}
 
 		// Rate limiting, generic errors, and timing equalization all live in
-		// attemptLogin (PRD §6.3).
+		// attemptLogin.
 		const result = await attemptLogin(
 			username,
 			password,

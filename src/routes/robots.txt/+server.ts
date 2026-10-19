@@ -5,7 +5,7 @@ export const GET: RequestHandler = async ({ url }) => {
 	const base = SITE_BASE_URL?.replace(/\/$/, '') || url.origin;
 	const body = [
 		'# Non-administrative areas may be crawled.',
-		'# Administrative and draft-preview areas must never be indexed (PRD §11).',
+		'# Administrative and draft-preview areas must never be indexed.',
 		'User-agent: *',
 		'Allow: /',
 		'Disallow: /admin',

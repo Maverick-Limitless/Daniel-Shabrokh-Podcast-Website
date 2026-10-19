@@ -110,7 +110,7 @@
 		color: var(--color-text-muted-on-ivory);
 	}
 
-	/* Deliberately restrained pending states (PRD §5.5): no invented content. */
+	/* Deliberately restrained pending states: no invented content. */
 	.about-block .pending {
 		font-style: italic;
 	}

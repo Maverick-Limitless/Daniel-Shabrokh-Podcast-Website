@@ -1,6 +1,6 @@
-// DSMP — Daniel Shabrokh Media Platform data model (PRD §7).
+// DSMP — Daniel Shabrokh Media Platform data model.
 // SQLite for single-instance deployment; provider/url can move to PostgreSQL
-// if deployment requirements change (PRD §9.1).
+// if deployment requirements change.
 
 generator client {
 	provider = "prisma-client-js"
@@ -15,7 +15,7 @@ model Administrator {
 	username           String    @unique
 	passwordHash       String
 	// Set on first-time init with a generated temporary credential; the admin
-	// must establish a permanent password before normal use (PRD §6.2).
+	// must establish a permanent password before normal use.
 	mustChangePassword Boolean   @default(true)
 	createdAt          DateTime  @default(now())
 	updatedAt          DateTime  @updatedAt
@@ -25,7 +25,7 @@ model Administrator {
 }
 
 // Only the SHA-256 hash of the opaque cookie token is stored, so a database
-// leak cannot be replayed as a valid session (PRD §6.4).
+// leak cannot be replayed as a valid session.
 model Session {
 	id              String       @id
 	administratorId String
@@ -43,12 +43,12 @@ model Article {
 	title          String
 	slug           String    @unique
 	excerpt        String    @default("")
-	// Markdown source; rendered server-side through a sanitizer (PRD §5.4).
+	// Markdown source; rendered server-side through a sanitizer.
 	body           String    @default("")
 	coverImage     String?
 	// draft | published | archived (validated in application code; SQLite has no enums)
 	status         String    @default("draft")
-	// Author attribution only when verified (PRD §5.4).
+	// Author attribution only when verified.
 	authorLabel    String?
 	category       String?
 	tags           String    @default("[]") // JSON string array, validated in app code
@@ -69,7 +69,7 @@ model Video {
 	slug           String    @unique
 	description    String    @default("")
 	provider       String    @default("youtube")
-	// Validated against YouTube ID format in app code (PRD §5.2).
+	// Validated against YouTube ID format in app code.
 	providerVideoId String
 	thumbnailUrl   String?
 	status         String    @default("draft")
@@ -106,9 +106,9 @@ model AudioEpisode {
 	@@index([category])
 }
 
-// Audit trail for administrative events (PRD §6.9). Never stores passwords,
+// Audit trail for administrative events. Never stores passwords,
 // raw tokens, or session secrets. identifierHash = sha256(username|ip) and is
-// used only for login rate-limit lookups (PRD §6.3).
+// used only for login rate-limit lookups.
 model AdminEvent {
 	id             String   @id @default(cuid())
 	type           String

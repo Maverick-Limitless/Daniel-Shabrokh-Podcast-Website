@@ -53,7 +53,7 @@
 			<p class="meta">
 				{formatDate(data.episode.publishedAt)}{#if data.episode.durationSeconds} · {formatDuration(data.episode.durationSeconds)}{/if}
 			</p>
-			<!-- No autoplay: playback always starts from an explicit user action (PRD §5.3). -->
+			<!-- No autoplay: playback always starts from an explicit user action. -->
 			<PlayButton episode={playerEpisode} label="Play episode" />
 		</div>
 	</div>

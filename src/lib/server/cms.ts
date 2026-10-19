@@ -3,7 +3,7 @@ import { logAdminEvent } from './audit';
 import type { ArticleInput, AudioInput, VideoInput } from './validation';
 
 /**
- * CMS write operations (PRD §6.7). All callers are authenticated server
+ * CMS write operations. All callers are authenticated server
  * actions; these functions perform the actual validation outcomes, unique-slug
  * handling, status transitions, and audit logging.
  */

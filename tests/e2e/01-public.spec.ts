@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-// PRD §14.2: public routes render, drafts stay private, search returns
+// public routes render, drafts stay private, search returns
 // published content only, and the browser console stays clean.
 
 let consoleErrors: string[] = [];

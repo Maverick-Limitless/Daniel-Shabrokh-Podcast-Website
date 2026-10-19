@@ -15,7 +15,7 @@ export type AdminEventType =
 	| 'content_deleted';
 
 /**
- * Record an administrative event (PRD §6.9). Never pass passwords, raw
+ * Record an administrative event. Never pass passwords, raw
  * recovery/session tokens, or other secrets as values here.
  */
 export async function logAdminEvent(event: {
@@ -34,7 +34,7 @@ export async function logAdminEvent(event: {
 			}
 		});
 	} catch (err) {
-		// Audit must not take the request down, but the failure is surfaced in logs (PRD §9.5).
+		// Audit must not take the request down, but the failure is surfaced in logs.
 		console.error('[audit] failed to record event of type', event.type, err);
 	}
 }

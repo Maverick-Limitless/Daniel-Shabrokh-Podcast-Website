@@ -125,7 +125,7 @@
 		color: var(--color-brass-strong);
 	}
 
-	/* Active state is never color-only: the underline carries it too (PRD §8.8). */
+	/* Active state is never color-only: the underline carries it too. */
 	.nav-link[aria-current='page'] {
 		color: var(--color-brass-strong);
 		border-bottom-color: var(--color-brass);

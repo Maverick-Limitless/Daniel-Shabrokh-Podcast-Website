@@ -46,7 +46,7 @@
 		</nav>
 	{/if}
 
-	<!-- Rendered server-side from Markdown through a strict sanitizer (PRD §6.6). -->
+	<!-- Rendered server-side from Markdown through a strict sanitizer. -->
 	<div class="prose">
 		{@html data.html}
 	</div>

@@ -2,8 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, test } from 'vitest';
 
 /**
- * Verifies actual WCAG contrast ratios for the design tokens (PRD §8.2:
- * "Verify actual contrast rather than assuming a color combination is
+ * Verifies actual WCAG contrast ratios for the design tokens * "Verify actual contrast rather than assuming a color combination is
  * accessible"). tokens.css is the single source of truth.
  */
 

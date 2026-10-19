@@ -70,7 +70,7 @@ h3 {
 	font-size: var(--text-h3);
 }
 
-/* Links stay distinguishable from body text wherever prose-like text appears (PRD §5.4). */
+/* Links stay distinguishable from body text wherever prose-like text appears. */
 a {
 	color: inherit;
 	text-decoration: none;
@@ -250,7 +250,7 @@ a {
 	box-shadow: none;
 }
 
-/* Liquid glass (PRD §8.6): used only on the floating player and mobile nav surface. */
+/* Liquid glass: used only on the floating player and mobile nav surface. */
 .liquid-glass {
 	background: color-mix(in srgb, var(--color-ivory) 80%, transparent);
 	backdrop-filter: blur(16px) saturate(1.4);
@@ -409,7 +409,7 @@ a {
 	color: var(--color-error);
 }
 
-/* ---------- motion (PRD §8.5) ---------- */
+/* ---------- motion ---------- */
 .rise {
 	animation: rise var(--dur-slow) var(--ease-out) both;
 }
@@ -457,7 +457,7 @@ a {
 	display: contents;
 }
 
-/* ---------- shared section + card language (PRD §8.4) ---------- */
+/* ---------- shared section + card language ---------- */
 .section-head {
 	display: flex;
 	align-items: baseline;

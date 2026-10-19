@@ -3,7 +3,7 @@ import { getAudioBySlug, getLatestEpisodes } from '#lib/server/content';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
-	// Only published episodes are reachable publicly (PRD §5.3).
+	// Only published episodes are reachable publicly.
 	const episode = await getAudioBySlug(params.slug);
 	if (!episode) error(404, 'Episode not found');
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Generates the labeled development audio fixture (PRD §5.3): a 30-second
+// Generates the labeled development audio fixture: a 30-second
 // soft two-tone chord with fade in/out, written as a plain PCM WAV file.
 // This is explicitly a development fixture — never a substitute for a
 // licensed, real audio source.

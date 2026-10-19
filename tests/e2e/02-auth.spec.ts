@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-// PRD §14.3: authentication, forced password change, logout, rate limiting.
+// authentication, forced password change, logout, rate limiting.
 // This file runs before the CMS spec; it establishes the final password that
 // later specs use to sign in.
 
@@ -26,7 +26,7 @@ test('first login forces a permanent password change, then the dashboard works',
 	await page.getByLabel('Password').fill(TEMP());
 	await page.getByRole('button', { name: 'Sign in' }).click();
 
-	// mustChangePassword redirects to settings (PRD §6.2).
+	// mustChangePassword redirects to settings.
 	await expect(page).toHaveURL(/\/admin\/settings$/);
 	await expect(page.getByText('Set a permanent password before continuing.')).toBeVisible();
 
@@ -71,7 +71,7 @@ test('repeated failures are rate limited', async ({ page }) => {
 		await page.getByRole('button', { name: 'Sign in' }).click();
 		await expect(page.getByText('Invalid username or password.')).toBeVisible();
 	}
-	// Sixth attempt is locked out (PRD §6.3) without revealing account state.
+	// Sixth attempt is locked out without revealing account state.
 	await page.getByLabel('Username').fill('rl-admin');
 	await page.getByLabel('Password').fill('wrong-password');
 	await page.getByRole('button', { name: 'Sign in' }).click();

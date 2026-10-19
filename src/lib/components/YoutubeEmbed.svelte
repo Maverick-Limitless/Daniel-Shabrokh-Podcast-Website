@@ -10,7 +10,7 @@
 	} = $props();
 
 	// Click-to-load facade: the YouTube iframe (and its JS) is only fetched
-	// when the visitor actually plays (PRD §12 — don't load every embed).
+	// when the visitor actually plays.
 	let activated = $state(false);
 	let thumbFailed = $state(false);
 	let img: HTMLImageElement | undefined = $state();

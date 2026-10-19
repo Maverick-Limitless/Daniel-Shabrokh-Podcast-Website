@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { login } from './helpers';
 
-// Release-mandate coverage (§9/§10): health checks, SEO metadata, YouTube
+// Release-readiness coverage: health checks, SEO metadata, YouTube
 // click-to-load privacy behavior, keyboard-operable media controls, and an
 // end-to-end malicious-input probe against real page rendering.
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// DSMP administrator initialization (PRD §6.2) and server-side password
-// recovery (PRD §6.5 alternative for a private single-admin deployment).
+// DSMP administrator initialization and server-side password
+// recovery.
 //
 //   pnpm admin:create -- --username <name>          initial creation
 //   pnpm admin:create -- --username <name> --reset  recovery (requires shell access)
@@ -46,13 +46,13 @@ try {
 	const existing = await prisma.administrator.findFirst();
 
 	if (existing && !reset) {
-		// Never overwrite an existing administrator silently (PRD §6.2).
+		// Never overwrite an existing administrator silently.
 		console.error(`An administrator (${existing.username}) already exists. Refusing to overwrite.`);
 		console.error('For password recovery, run with --reset from the server shell.');
 		process.exit(1);
 	}
 
-	// Cryptographically secure temporary credential (PRD §6.2).
+	// Cryptographically secure temporary credential.
 	const tempPassword = randomBytes(18).toString('base64url');
 	const passwordHash = await hash(tempPassword, { memoryCost: 19456, timeCost: 2, parallelism: 1 });
 

@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit';
 
 /**
- * Server-side authorization for every admin load and action (PRD §6.6, §10).
+ * Server-side authorization for every admin load and action.
  * The route layout redirects unauthenticated visitors, but actions and loads
  * never trust that — they verify independently.
  */

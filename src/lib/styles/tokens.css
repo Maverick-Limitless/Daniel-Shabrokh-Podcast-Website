@@ -1,5 +1,5 @@
 /*
-	DSMP design tokens (PRD §8).
+	DSMP design tokens.
 	Contrast ratios below were computed with the WCAG 2.x relative-luminance
 	formula and are re-verified automatically by tests/unit/tokens.test.ts —
 	if you change a color here, that test will catch a regression.
@@ -80,7 +80,7 @@
 	--shadow-s: 0 1px 2px rgb(16 26 44 / 0.08), 0 2px 8px rgb(16 26 44 / 0.06);
 	--shadow-m: 0 2px 6px rgb(16 26 44 / 0.1), 0 12px 32px rgb(16 26 44 / 0.12);
 
-	/* ---- motion (PRD §8.5) ---- */
+	/* ---- motion ---- */
 	--ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 	--dur-fast: 140ms;
 	--dur-med: 240ms;

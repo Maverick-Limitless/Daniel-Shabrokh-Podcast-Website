@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { login, timeToSeconds } from './helpers';
 
-// PRD §5.3 / §4.2 Journey B: one shared player, real playback with a valid
+// one shared player, real playback with a valid
 // test source, persistence across client-side navigation, deliberate error
 // state for broken sources.
 
@@ -12,7 +12,7 @@ test('player: playback starts from the listen archive and persists across naviga
 
 	const bar = page.locator('.player-bar');
 	await expect(bar).toBeVisible();
-	// Exactly one audio element — no competing instances (PRD §5.3).
+	// Exactly one audio element — no competing instances.
 	expect(await page.locator('audio').count()).toBe(1);
 
 	// Real playback with the generated 30s fixture advances the position.
@@ -28,7 +28,7 @@ test('player: playback starts from the listen archive and persists across naviga
 		)
 		.toBeGreaterThan(0);
 
-	// Navigation must not reset playback (PRD §4.2 Journey B).
+	// Navigation must not reset playback.
 	await page.getByRole('link', { name: 'About' }).first().click();
 	await expect(page).toHaveURL(/\/about$/);
 	await expect(bar).toBeVisible();

@@ -1,4 +1,4 @@
-// [DEV] fixture seeder (PRD §3.3, §5.3). Inserts clearly labeled placeholder
+// [DEV] fixture seeder. Inserts clearly labeled placeholder
 // content for development, screenshots, and automated tests only.
 //   - Refuses to run when NODE_ENV=production.
 //   - Every title/excerpt carries an explicit [DEV] label.

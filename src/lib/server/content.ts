@@ -4,7 +4,7 @@ import { escapeLike } from './validation';
 /**
  * Public-content queries. Every function here only ever returns rows with
  * status = 'published' — drafts and archived content must never be visible to
- * public visitors or to search (PRD §2.2, §5.6, §6.7).
+ * public visitors or to search.
  */
 
 const PUBLISHED = 'published' as const;
@@ -127,8 +127,8 @@ export interface SearchHit {
 }
 
 /**
- * Server-side search over published content only (PRD §5.6). Parameterized
- * LIKE queries — user input is never concatenated into SQL (PRD §6.6).
+ * Server-side search over published content only. Parameterized
+ * LIKE queries — user input is never concatenated into SQL.
  * SQLite LIKE is ASCII-case-insensitive; non-ASCII case folding is a
  * documented limitation acceptable for the initial release.
  */

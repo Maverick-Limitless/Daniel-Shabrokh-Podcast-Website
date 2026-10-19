@@ -50,7 +50,7 @@
 		<p class="hint">
 			An https:// URL of an audio file you are authorized to use, or a root-relative path such as
 			/fixtures/dev-tone-30s.wav for the labeled development fixture. Never point this at media
-			you have no right to distribute (PRD §5.3).
+			you have no right to distribute.
 		</p>
 		{#if err('audioSourceUrl')}<p class="field-error">{err('audioSourceUrl')}</p>{/if}
 	</div>

@@ -18,7 +18,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 	const response = await resolve(event);
 
-	// Security headers (PRD §10). HSTS is left to the HTTPS reverse proxy
+	// Security headers. HSTS is left to the HTTPS reverse proxy
 	// (documented in README) because it must only be sent over TLS.
 	response.headers.set('X-Content-Type-Options', 'nosniff');
 	response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');

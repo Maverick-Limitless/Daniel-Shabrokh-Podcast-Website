@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Laboratory measurement of Core Web Vitals against the production build
-// (release mandate §10). Boots the built server, loads real pages in
+//. Boots the built server, loads real pages in
 // Chromium, and records LCP / CLS via PerformanceObserver plus interaction
 // durations (an INP-style lab proxy from the Event Timing API).
 //

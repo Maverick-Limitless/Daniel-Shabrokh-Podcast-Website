@@ -1,7 +1,7 @@
 import { defineEnvVars } from '@sveltejs/kit/env';
 
 /**
- * Typed environment variables (PRD §9.4). Values are read at runtime from
+ * Typed environment variables. Values are read at runtime from
  * the process environment and exposed as named exports of
  * `$app/env/private`. Copy .env.example to .env and fill in real values;
  * never commit secrets.

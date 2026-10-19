@@ -10,7 +10,7 @@ export type PlayerStatus = 'idle' | 'loading' | 'playing' | 'paused' | 'error';
 /**
  * Shared audio-player state. One instance for the whole app: the single
  * <audio> element lives in PlayerBar (root layout), so playback continues
- * across client-side navigation (PRD §4.2 Journey B) and competing instances
+ * across client-side navigation and competing instances
  * cannot exist.
  */
 class PlayerStore {

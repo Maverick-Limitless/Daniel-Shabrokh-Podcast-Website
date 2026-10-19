@@ -135,7 +135,7 @@
 			</form>
 		{/if}
 
-		<!-- Destructive action with a no-JS confirmation pattern (PRD §6.7). -->
+		<!-- Destructive action with a no-JS confirmation pattern. -->
 		<details class="delete-details">
 			<summary class="btn btn-danger btn-sm">Delete article…</summary>
 			<form method="POST" action="?/delete" use:enhance={undefined}>

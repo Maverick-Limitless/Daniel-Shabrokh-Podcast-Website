@@ -174,7 +174,7 @@ export function fieldErrors(error: z.ZodError): Record<string, string> {
 	return out;
 }
 
-/** Escape % and _ so user input is matched literally inside LIKE (PRD §6.6). */
+/** Escape % and _ so user input is matched literally inside LIKE. */
 export function escapeLike(value: string): string {
 	return value.replace(/[\\%_]/g, (ch: string) => `\\${ch}`);
 }

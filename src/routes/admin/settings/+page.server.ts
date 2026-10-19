@@ -34,7 +34,7 @@ export const actions: Actions = {
 		}
 
 		// Requires the current password, invalidates other sessions, rotates the
-		// current one, and records the event (PRD §6.5).
+		// current one, and records the event.
 		const result = await changePassword(admin.id, current, password, cookies, url.protocol === 'https:');
 		if (!result.ok) {
 			return fail(400, { message: result.message });

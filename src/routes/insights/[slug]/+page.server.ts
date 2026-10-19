@@ -4,7 +4,7 @@ import { renderMarkdown } from '#lib/server/markdown';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
-	// Only published articles are reachable publicly (PRD §5.4).
+	// Only published articles are reachable publicly.
 	const article = await getArticleBySlug(params.slug);
 	if (!article) error(404, 'Article not found');
 

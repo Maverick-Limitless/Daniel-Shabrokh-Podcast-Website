@@ -4,7 +4,7 @@ import type { Cookies } from '@sveltejs/kit';
 import { db } from './db';
 import { logAdminEvent } from './audit';
 
-// PRD §6.4 / §10: argon2id with OWASP-recommended minimum parameters.
+// argon2id with OWASP-recommended minimum parameters.
 // @node-rs/argon2 hashes with Argon2id by default; the numeric parameters
 // are set explicitly to the OWASP minimums.
 const ARGON2_PARAMS = {
@@ -23,7 +23,7 @@ const LAST_SEEN_STALE_MS = 15 * 60 * 1000;
 
 // Precomputed hash of a random password: when the username does not exist we
 // still run a full argon2 verification against this, so response timing does
-// not reveal whether an account exists (PRD §6.3).
+// not reveal whether an account exists.
 const dummyHashPromise = argonHash(randomBytes(18).toString('base64'), ARGON2_PARAMS);
 
 export function hashPassword(password: string): Promise<string> {
@@ -66,7 +66,7 @@ export async function createSession(administratorId: string, cookies: Cookies, s
 	const now = Date.now();
 	await db.session.create({
 		data: {
-			id: sha256(token), // DB stores only the hash (PRD §6.4)
+			id: sha256(token), // DB stores only the hash
 			administratorId,
 			createdAt: new Date(now),
 			expiresAt: new Date(now + SLIDE_MS)
@@ -163,7 +163,7 @@ export async function attemptLogin(
 ): Promise<LoginResult> {
 	const key = loginKey(username, ip);
 
-	// Rate limit: count recent failures for this identifier (PRD §6.3).
+	// Rate limit: count recent failures for this identifier.
 	const failures = await db.adminEvent.count({
 		where: {
 			type: 'login_failed',
@@ -194,11 +194,11 @@ export async function attemptLogin(
 			actor: username.slice(0, 40),
 			identifierHash: key
 		});
-		// Generic error: never reveals whether the account exists (PRD §6.3).
+		// Generic error: never reveals whether the account exists.
 		return { ok: false, message: 'Invalid username or password.' };
 	}
 
-	// A fresh token + row is created at login: the session is regenerated (PRD §6.3).
+	// A fresh token + row is created at login: the session is regenerated.
 	await createSession(administrator.id, cookies, secure);
 	await logAdminEvent({ type: 'login_success', actor: administrator.username });
 	await purgeExpired();
@@ -210,7 +210,7 @@ export type PasswordChangeResult = { ok: true } | { ok: false; message: string }
 /**
  * Changes the administrator password: requires the current password, invalidates
  * every other session, rotates the current session, and records the event
- * (PRD §6.5).
+ *.
  */
 export async function changePassword(
 	administratorId: string,

@@ -4,7 +4,7 @@ import type { RequestHandler } from './$types';
 
 const STATIC_PATHS = ['', '/watch', '/listen', '/insights', '/about', '/search', '/privacy'];
 
-/** Sitemap generated from published content only (PRD §11). */
+/** Sitemap generated from published content only. */
 export const GET: RequestHandler = async ({ url }) => {
 	const base = SITE_BASE_URL?.replace(/\/$/, '') || url.origin;
 

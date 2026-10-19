@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { renderMarkdown } from '../../src/lib/server/markdown';
 
-describe('renderMarkdown (sanitized rendering, PRD §5.4/§6.6)', () => {
+describe('renderMarkdown (sanitized rendering)', () => {
 	test('renders basic Markdown and strips h1 (title owns h1)', () => {
 		const { html } = renderMarkdown('# Heading One\n\n## Section A\n\nHello **world**.');
 		expect(html).toContain('Section A');

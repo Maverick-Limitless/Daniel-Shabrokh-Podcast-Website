@@ -1,7 +1,7 @@
 import { db } from '#lib/server/db';
 import type { RequestHandler } from './$types';
 
-// Liveness/readiness probe (release mandate §11: health and smoke checks).
+// Liveness/readiness probe.
 // Returns ok only when the process is serving AND the database answers.
 export const GET: RequestHandler = async () => {
 	try {

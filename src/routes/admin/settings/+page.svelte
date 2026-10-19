@@ -56,7 +56,7 @@
 			</button>
 		</form>
 		<p class="hint">
-			Updating the password signs out every other session (PRD §6.5).
+			Updating the password signs out every other session.
 		</p>
 	</section>
 

@@ -29,7 +29,7 @@
 	<meta property="og:url" content={data.canonicalBase + '/'} />
 </svelte:head>
 
-<!-- Hero (PRD §5.1: distinctive, restrained, no fabricated metrics) -->
+<!-- Hero -->
 <section class="hero on-ink">
 	<div class="container hero-inner">
 		<div class="hero-copy">

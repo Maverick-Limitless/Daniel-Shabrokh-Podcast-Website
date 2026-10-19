@@ -48,7 +48,7 @@ export const actions: Actions = {
 		if (!parsed.success) {
 			return fail(400, { errors: fieldErrors(parsed.error), values: Object.fromEntries(data) });
 		}
-		// Publishing validates and stores the submitted fields first (PRD §6.7).
+		// Publishing validates and stores the submitted fields first.
 		const updated = await updateVideo(params.id, parsed.data, admin.username);
 		if (!updated.ok) {
 			return fail(400, { errors: updated.fieldErrors ?? {}, values: Object.fromEntries(data) });

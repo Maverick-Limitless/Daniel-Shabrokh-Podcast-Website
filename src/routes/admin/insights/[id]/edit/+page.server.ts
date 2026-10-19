@@ -57,7 +57,7 @@ export const actions: Actions = {
 			return fail(400, { errors: fieldErrors(parsed.error), values: Object.fromEntries(data) });
 		}
 		// Publishing validates and stores the submitted fields first, so an
-		// invalid record can never become publicly visible (PRD §6.7).
+		// invalid record can never become publicly visible.
 		const updated = await updateArticle(params.id, parsed.data, admin.username);
 		if (!updated.ok) {
 			return fail(400, { errors: updated.fieldErrors ?? {}, values: Object.fromEntries(data) });

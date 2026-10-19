@@ -17,12 +17,12 @@ export default defineConfig(({ mode }) => ({
 					filename.split(/[/\\]/).includes('node_modules') ? undefined : true
 			},
 
-			// PRD §9.6: single-instance Node deployment.
+			// Single-instance Node deployment.
 			adapter: adapter(),
 
 			...(kitOrigin ? { paths: { origin: kitOrigin } } : {}),
 
-			// PRD §6.6 / §10: Content-Security-Policy. 'hash' mode lets SvelteKit
+			// Content-Security-Policy. 'hash' mode lets SvelteKit
 			// hash its own inline bootstrap scripts. Dev allows inline styles for
 			// Vite HMR; production does not.
 			csp: {

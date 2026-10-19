@@ -7,7 +7,7 @@ const TYPE_MAP = { insights: 'article', videos: 'video', audio: 'audio' } as con
 type PreviewKind = (typeof TYPE_MAP)[keyof typeof TYPE_MAP];
 
 /**
- * Draft preview for the administrator only (PRD §6.7). Renders with the public
+ * Draft preview for the administrator only. Renders with the public
  * page structure but is auth-gated server-side and never public.
  */
 export const load: PageServerLoad = async ({ locals, params }) => {

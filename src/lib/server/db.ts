@@ -9,7 +9,7 @@ const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 function createPrismaClient(): PrismaClient {
 	const url = DATABASE_URL;
 	if (!url) {
-		// Fail clearly when required configuration is missing (PRD §9.4).
+		// Fail clearly when required configuration is missing.
 		throw new Error(
 			'DATABASE_URL is not set. Copy .env.example to .env and configure the database path.'
 		);

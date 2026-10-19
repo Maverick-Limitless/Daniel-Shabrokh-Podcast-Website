@@ -1,10 +1,9 @@
 import { expect, test } from '@playwright/test';
 
-// Automated layout-integrity checks (PRD §8.7). Because neither the configured
-// NVIDIA reviewer nor image inspection is available in this environment (see
-// the delivery report), these geometric assertions complement the overflow
-// matrix and axe scans: interactive elements must never overlap, must never be
-// clipped off the viewport horizontally, and must have a usable hit area.
+// Automated layout-integrity checks. These geometric assertions complement
+// the overflow matrix and axe scans: interactive elements must never
+// overlap, must never be clipped off the viewport horizontally, and must
+// have a usable hit area.
 
 interface Box {
 	x: number;
