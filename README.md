@@ -1,4 +1,4 @@
-# DSH — Daniel Shabrokh Podcast Website
+# Daniel Shabrokh Podcast Website
 
 An independent, editorial-quality website concept for the **Daniel Shabrokh
 podcast**: one coherent destination for video, audio, and written insights,

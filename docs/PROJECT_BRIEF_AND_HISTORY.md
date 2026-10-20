@@ -1,7 +1,7 @@
 # Project Brief and History
 
-**Project:** DSH — Daniel Shabrokh Podcast Website (independent proposal)
-**Repository:** https://github.com/Maverick-Limitless/DSH-Podcast-Website
+**Project:** Daniel Shabrokh Podcast Website (independent proposal)
+**Repository:** https://github.com/Maverick-Limitless/Daniel-Shabrokh-Podcast-Website
 **Last updated:** 2026-10-19 (verified against `git log` and the working tree)
 
 ## Objectives
